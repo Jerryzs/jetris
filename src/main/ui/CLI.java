@@ -21,54 +21,10 @@ public class CLI extends TimerTask {
 
     private static final String[][] HOLD_TEXT = new String[][] {
             {"  HOLD  "},
-            {
-                " ▙▟ ▛▜ ▛  ▛▚",
-                " ▘▝ ▀▀ ▀▀ ▀▀",
-            },
-            {
-                " █ █ █▀█ █   █▀▄",
-                " █▄█ █ █ █   █ █",
-                " █ █ █▄█ █▄▄ █▄▀"
-            },
-            {
-                " █  █  ██  █    ███ ",
-                " █▄▄█ █  █ █    █  █",
-                " █▀▀█ █  █ █    █  █",
-                " █  █  ██  ████ ███ "
-            },
-            {
-                " █   █  ███  █     ████ ",
-                " █   █ █   █ █     █   █",
-                " █████ █   █ █     █   █",
-                " █   █ █   █ █     █   █",
-                " █   █  ███  █████ ████ "
-            }
     };
 
     private static final String[][] NEXT_TEXT = new String[][] {
             {"  NEXT  "},
-            {
-                " ▛▜ ▛▘ ▚▞ ▜▛",
-                " ▘▝ ▀▀ ▘▝ ▝▘"
-            },
-            {
-                " █▀█ █▀▀ █ █ ███",
-                " █ █ █▄   █   █ ",
-                " █ █ █▄▄ █ █  █ "
-            },
-            {
-                " █▌ █ ████ █  █ ████",
-                " █▐ █ █     ▚▛   ▐▌ ",
-                " █ ▌█ █▀▀   ▞▙   ▐▌ ",
-                " █ ▐█ █▄▄▄ █  █  ▐▌ "
-            },
-            {
-                " █▌  █ ████ █   █ █████",
-                " █▐▌ █ █     █ █    █  ",
-                " █ █ █ ███    █     █  ",
-                " █ ▐▌█ █     █ █    █  ",
-                " █  ▐█ ████ █   █   █  "
-            }
     };
 
     private int scale;
@@ -180,9 +136,9 @@ public class CLI extends TimerTask {
 
     private void appendLeftPadding(StringBuilder sb, int line) {
         if (line < this.scale) {
-            sb.append(" ".repeat((this.scale - 1) * 2 + 1))
-                    .append(CLI.HOLD_TEXT[this.scale - 1][line])
-                    .append(" ".repeat((this.scale - 1) * 2 + 1));
+            sb.append("  ")
+                    .append(CLI.HOLD_TEXT[0][0])
+                    .append("  ");
         } else if (line == this.scale || line > 3 * this.scale || this.game.getHold() == null) {
             sb.append("  ".repeat(5 + 4 * (this.scale - 1)));
         } else {
@@ -198,9 +154,9 @@ public class CLI extends TimerTask {
         sb.append("│");
 
         if (line < this.scale) {
-            sb.append(" ".repeat((this.scale - 1) * 2 + 1))
-                    .append(CLI.NEXT_TEXT[this.scale - 1][line])
-                    .append(" ".repeat((this.scale - 1) * 2 + 1));
+            sb.append("  ")
+                    .append(CLI.NEXT_TEXT[0][0])
+                    .append("  ");
         } else if (line == this.scale
                 || (3 * this.scale) - (line - this.scale - 1) % (3 * this.scale) <= this.scale
                 || line > 13 * this.scale) {
