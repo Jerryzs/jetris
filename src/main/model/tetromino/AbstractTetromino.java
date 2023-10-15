@@ -15,13 +15,16 @@ public abstract class AbstractTetromino {
 
     protected AbstractTetromino() {
         this.id = ++count;
-        this.orientation = Direction.DOWN;
-        this.coords = new int[] {4, 20};
+        this.reset(true);
     }
 
-    public void toTop() {
-        this.coords[0] = 4;
-        this.coords[1] = 18;
+    public void reset() {
+        this.reset(false);
+    }
+
+    private void reset(boolean toBuffer) {
+        this.orientation = Direction.DOWN;
+        this.coords = new int[] {4, toBuffer ? 20 : 18};
     }
 
     public int getId() {

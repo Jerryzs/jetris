@@ -84,11 +84,12 @@ public class Game extends TimerTask {
             return;
         }
 
-        this.onMoveSuccessful();
+        this.lockFrameCounter = 0;
         this.lockFrameCounterResetCounter = 0;
+        this.moveCells = 0;
 
         this.hold = this.playfield.swapCurrent(this.hold == null ? this.bag.pop() : this.hold);
-        this.hold.toTop();
+        this.hold.reset();
         this.holdingAllowed = false;
     }
 
