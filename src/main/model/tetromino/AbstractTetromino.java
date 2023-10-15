@@ -24,7 +24,7 @@ public abstract class AbstractTetromino {
 
     private void reset(boolean toBuffer) {
         this.orientation = Direction.DOWN;
-        this.coords = new int[] {4, toBuffer ? 20 : 18};
+        this.coords = new int[]{4, toBuffer ? 20 : 18};
     }
 
     public int getId() {
@@ -32,7 +32,7 @@ public abstract class AbstractTetromino {
     }
 
     public int[] getCoords() {
-        return new int[] {this.coords[0], this.coords[1]};
+        return new int[]{this.coords[0], this.coords[1]};
     }
 
     public boolean isHidden() {
@@ -161,7 +161,7 @@ public abstract class AbstractTetromino {
     }
 
     public static int[] coords(int num) {
-        return new int[] {
+        return new int[]{
                 (num / 100000 == 1 ? -1 : 1) * (num % 100000) / 1000,
                 ((num % 1000) / 100 == 1 ? -1 : 1) * (num % 100)
         };

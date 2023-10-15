@@ -2,7 +2,7 @@ package model.tetromino;
 
 import java.util.Set;
 
-public class T  extends CommonKickedTetromino {
+public class T extends CommonKickedTetromino {
     private static final int[] STANDALONE = {0, 1, 0, 0, 1, 1, 1, 0};
 
     @Override

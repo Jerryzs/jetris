@@ -84,7 +84,8 @@ public class Playfield {
         }
 
         Set<Integer> occupiedCoords;
-        OUTER: while ((occupiedCoords = this.current.testRotate(direction)) != null) {
+        OUTER:
+        while ((occupiedCoords = this.current.testRotate(direction)) != null) {
             for (int c : occupiedCoords) {
                 int[] oc = AbstractTetromino.coords(c);
 
@@ -140,7 +141,8 @@ public class Playfield {
     }
 
     private void clear() {
-        OUTER: for (int i = 0; i < this.matrix.length; i++) {
+        OUTER:
+        for (int i = 0; i < this.matrix.length; i++) {
             for (int j = 0; j < this.matrix[i].length; j++) {
                 if (this.matrix[i][j] == 0) {
                     continue OUTER;

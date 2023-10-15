@@ -8,7 +8,6 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import model.Game;
 import model.tetromino.AbstractTetromino;
-import model.tetromino.CommonKickedTetromino;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,55 +16,55 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CLI implements Runnable {
-    private static final String[][] HOLD_TEXT = new String[][] {
+    private static final String[][] HOLD_TEXT = new String[][]{
             {"  HOLD  "},
             {
-                " ▙▟  ▛▜  ▛   ▛▚ ",
-                " ▘▝  ▀▀  ▀▀  ▀▀ ",
+                    " ▙▟  ▛▜  ▛   ▛▚ ",
+                    " ▘▝  ▀▀  ▀▀  ▀▀ ",
             },
             {
-                " █ █   █▀█   █     █▀▄  ",
-                " █▄█   █ █   █     █ █  ",
-                " █ █   █▄█   █▄▄   █▄▀  "
+                    " █ █   █▀█   █     █▀▄  ",
+                    " █▄█   █ █   █     █ █  ",
+                    " █ █   █▄█   █▄▄   █▄▀  "
             },
             {
-                "  █  █     ██     █       ███   ",
-                "  █▄▄█    █  █    █       █  █  ",
-                "  █▀▀█    █  █    █       █  █  ",
-                "  █  █     ██     ████    ███   "
+                    "  █  █     ██     █       ███   ",
+                    "  █▄▄█    █  █    █       █  █  ",
+                    "  █▀▀█    █  █    █       █  █  ",
+                    "  █  █     ██     ████    ███   "
             },
             {
-                "  █   █      ███      █         ████    ",
-                "  █   █     █   █     █         █   █   ",
-                "  █████     █   █     █         █   █   ",
-                "  █   █     █   █     █         █   █   ",
-                "  █   █      ███      █████     ████    "
+                    "  █   █      ███      █         ████    ",
+                    "  █   █     █   █     █         █   █   ",
+                    "  █████     █   █     █         █   █   ",
+                    "  █   █     █   █     █         █   █   ",
+                    "  █   █      ███      █████     ████    "
             }
     };
 
-    private static final String[][] NEXT_TEXT = new String[][] {
+    private static final String[][] NEXT_TEXT = new String[][]{
             {"  NEXT  "},
             {
-                " ▛▜  ▛▘  ▚▞  ▜▛ ",
-                " ▘▝  ▀▀  ▘▝  ▝▘ "
+                    " ▛▜  ▛▘  ▚▞  ▜▛ ",
+                    " ▘▝  ▀▀  ▘▝  ▝▘ "
             },
             {
-                " █▀█   █▀▀   █ █   ███  ",
-                " █ █   █▄     █     █   ",
-                " █ █   █▄▄   █ █    █   "
+                    " █▀█   █▀▀   █ █   ███  ",
+                    " █ █   █▄     █     █   ",
+                    " █ █   █▄▄   █ █    █   "
             },
             {
-                "  █▌ █    ████    █  █    ████  ",
-                "  █▐ █    █        ▚▛      ▐▌   ",
-                "  █ ▌█    █▀▀      ▞▙      ▐▌   ",
-                "  █ ▐█    █▄▄▄    █  █     ▐▌   "
+                    "  █▌ █    ████    █  █    ████  ",
+                    "  █▐ █    █        ▚▛      ▐▌   ",
+                    "  █ ▌█    █▀▀      ▞▙      ▐▌   ",
+                    "  █ ▐█    █▄▄▄    █  █     ▐▌   "
             },
             {
-                "  █▌  █     ████     █   █     █████   ",
-                "  █▐▌ █     █         █ █        █     ",
-                "  █ █ █     ███        █         █     ",
-                "  █ ▐▌█     █         █ █        █     ",
-                "  █  ▐█     ████     █   █       █     "
+                    "  █▌  █     ████     █   █     █████   ",
+                    "  █▐▌ █     █         █ █        █     ",
+                    "  █ █ █     ███        █         █     ",
+                    "  █ ▐▌█     █         █ █        █     ",
+                    "  █  ▐█     ████     █   █       █     "
             }
     };
 
