@@ -77,29 +77,25 @@ public class CLI implements Runnable {
     private final TextGraphics textGraphics;
     private TerminalSize terminalSize;
 
-    public CLI(InputStream in, OutputStream out, int refreshRate) throws IOException {
-        this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
-        this.screen.startScreen();
-        this.screen.setCursorPosition(null);
-
-        this.textGraphics = screen.newTextGraphics();
+    public CLI(InputStream in, OutputStream out, int refreshRate) {
+        try {
+            this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
+            this.screen.startScreen();
+            this.screen.setCursorPosition(null);
+            this.textGraphics = this.screen.newTextGraphics();
+            this.scale = Math.max(this.screen.getTerminalSize().getRows() / 22, 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         this.game = new Game(this, refreshRate);
 
 //        Timer timer = new Timer();
 //        timer.schedule(this, 0, 1000 / CLI.REFRESH_RATE);
-
-        this.scale = Math.max(this.screen.getTerminalSize().getRows() / 22, 1);
     }
 
-    @SuppressWarnings("methodlength")
-    private void checkInput() {
-        KeyStroke key;
-        try {
-            key = this.screen.pollInput();
-        } catch (IOException e) {
-            return;
-        }
+    private void checkInput() throws IOException {
+        KeyStroke key = this.screen.pollInput();
 
         if (key != null) {
             if (key.getKeyType() == KeyType.EOF) {
@@ -262,8 +258,7 @@ public class CLI implements Runnable {
             this.screen.refresh();
             this.checkInput();
         } catch (IOException e) {
-            System.exit(1);
-            // continue
+            throw new RuntimeException(e);
         }
     }
 }
