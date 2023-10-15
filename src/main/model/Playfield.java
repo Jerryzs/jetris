@@ -48,7 +48,7 @@ public class Playfield {
     }
 
     protected boolean move(AbstractTetromino.Direction direction) {
-        if (this.current == null) {
+        if (this.current == null || (this.current.isHidden() && direction != AbstractTetromino.Direction.DOWN)) {
             return false;
         }
 
@@ -79,6 +79,10 @@ public class Playfield {
     }
 
     protected boolean rotate(int direction) {
+        if (this.current == null || this.current.isHidden()) {
+            return false;
+        }
+
         Set<Integer> occupiedCoords;
         OUTER: while ((occupiedCoords = this.current.testRotate(direction)) != null) {
             for (int c : occupiedCoords) {

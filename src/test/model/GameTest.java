@@ -19,25 +19,25 @@ public class GameTest {
         this.randomBag = new RandomBag();
         this.tetromino = new T();
 
-        this.game = new Game(null, 30, this.playfield, this.randomBag, this.tetromino);
+        this.game = new Game(null, 1, this.playfield, this.randomBag, this.tetromino);
 
         this.game.toggleGame();
     }
 
     @Test
     void testMovements() {
-        this.game.moveLeft();
-        assertEquals(AbstractTetromino.num(3, 20), AbstractTetromino.num(this.tetromino.getCoords()));
-
-        this.game.moveRight();
-        assertEquals(AbstractTetromino.num(4, 20), AbstractTetromino.num(this.tetromino.getCoords()));
-
         this.game.toggleGame();
-        for (int i = 0; i <= 1 / (0.01667 * 60 / this.game.framerate) + 10; i++) {
+        while (this.tetromino.isHidden()) {
             this.game.run();
         }
         this.game.toggleGame();
 
+        assertEquals(AbstractTetromino.num(4, 19), AbstractTetromino.num(this.tetromino.getCoords()));
+
+        this.game.moveLeft();
+        assertEquals(AbstractTetromino.num(3, 19), AbstractTetromino.num(this.tetromino.getCoords()));
+
+        this.game.moveRight();
         assertEquals(AbstractTetromino.num(4, 19), AbstractTetromino.num(this.tetromino.getCoords()));
     }
 }
