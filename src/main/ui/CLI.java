@@ -20,52 +20,52 @@ public class CLI implements Runnable {
     private static final String[][] HOLD_TEXT = new String[][] {
             {"  HOLD  "},
             {
-                " ▙▟ ▛▜ ▛  ▛▚",
-                " ▘▝ ▀▀ ▀▀ ▀▀",
+                " ▙▟  ▛▜  ▛   ▛▚ ",
+                " ▘▝  ▀▀  ▀▀  ▀▀ ",
             },
             {
-                " █ █ █▀█ █   █▀▄",
-                " █▄█ █ █ █   █ █",
-                " █ █ █▄█ █▄▄ █▄▀"
+                " █ █   █▀█   █     █▀▄  ",
+                " █▄█   █ █   █     █ █  ",
+                " █ █   █▄█   █▄▄   █▄▀  "
             },
             {
-                " █  █  ██  █    ███ ",
-                " █▄▄█ █  █ █    █  █",
-                " █▀▀█ █  █ █    █  █",
-                " █  █  ██  ████ ███ "
+                "  █  █     ██     █       ███   ",
+                "  █▄▄█    █  █    █       █  █  ",
+                "  █▀▀█    █  █    █       █  █  ",
+                "  █  █     ██     ████    ███   "
             },
             {
-                " █   █  ███  █     ████ ",
-                " █   █ █   █ █     █   █",
-                " █████ █   █ █     █   █",
-                " █   █ █   █ █     █   █",
-                " █   █  ███  █████ ████ "
+                "  █   █      ███      █         ████    ",
+                "  █   █     █   █     █         █   █   ",
+                "  █████     █   █     █         █   █   ",
+                "  █   █     █   █     █         █   █   ",
+                "  █   █      ███      █████     ████    "
             }
     };
 
     private static final String[][] NEXT_TEXT = new String[][] {
             {"  NEXT  "},
             {
-                " ▛▜ ▛▘ ▚▞ ▜▛",
-                " ▘▝ ▀▀ ▘▝ ▝▘"
+                " ▛▜  ▛▘  ▚▞  ▜▛ ",
+                " ▘▝  ▀▀  ▘▝  ▝▘ "
             },
             {
-                " █▀█ █▀▀ █ █ ███",
-                " █ █ █▄   █   █ ",
-                " █ █ █▄▄ █ █  █ "
+                " █▀█   █▀▀   █ █   ███  ",
+                " █ █   █▄     █     █   ",
+                " █ █   █▄▄   █ █    █   "
             },
             {
-                " █▌ █ ████ █  █ ████",
-                " █▐ █ █     ▚▛   ▐▌ ",
-                " █ ▌█ █▀▀   ▞▙   ▐▌ ",
-                " █ ▐█ █▄▄▄ █  █  ▐▌ "
+                "  █▌ █    ████    █  █    ████  ",
+                "  █▐ █    █        ▚▛      ▐▌   ",
+                "  █ ▌█    █▀▀      ▞▙      ▐▌   ",
+                "  █ ▐█    █▄▄▄    █  █     ▐▌   "
             },
             {
-                " █▌  █ ████ █   █ █████",
-                " █▐▌ █ █     █ █    █  ",
-                " █ █ █ ███    █     █  ",
-                " █ ▐▌█ █     █ █    █  ",
-                " █  ▐█ ████ █   █   █  "
+                "  █▌  █     ████     █   █     █████   ",
+                "  █▐▌ █     █         █ █        █     ",
+                "  █ █ █     ███        █         █     ",
+                "  █ ▐▌█     █         █ █        █     ",
+                "  █  ▐█     ████     █   █       █     "
             }
     };
 
@@ -158,31 +158,23 @@ public class CLI implements Runnable {
     }
 
     private void appendStandaloneTetromino(StringBuilder sb, int line, AbstractTetromino tetromino) {
-        if (tetromino instanceof CommonKickedTetromino) {
-            sb.append(" ".repeat(this.scale));
-        }
-
         int l = line / this.scale;
-        for (int k = 0; k < (tetromino instanceof CommonKickedTetromino ? 3 : 4); k++) {
+        for (int k = 0; k < 4; k++) {
             this.appendHorizontalBlock(sb, tetromino.getStandalone()[4 * l + k] != 0);
-        }
-
-        if (tetromino instanceof CommonKickedTetromino) {
-            sb.append(" ".repeat(this.scale));
         }
     }
 
     private void appendLeftPadding(StringBuilder sb, int line) {
         if (line < this.scale) {
-            sb.append(" ".repeat((this.scale - 1) * 2 + 1))
+            sb.append(" ".repeat(this.scale * 2))
                     .append(CLI.HOLD_TEXT[this.scale - 1][line])
-                    .append(" ".repeat((this.scale - 1) * 2 + 1));
-        } else if (line == this.scale || line > 3 * this.scale || this.game.getHold() == null) {
-            sb.append("  ".repeat(5 + 4 * (this.scale - 1)));
+                    .append(" ".repeat(this.scale * 2));
+        } else if (line < 2 * this.scale || line >= 4 * this.scale || this.game.getHold() == null) {
+            sb.append(" ".repeat(12 * this.scale));
         } else {
-            sb.append(" ");
-            this.appendStandaloneTetromino(sb, line - this.scale - 1, this.game.getHold());
-            sb.append(" ");
+            sb.append(" ".repeat(this.scale * 2));
+            this.appendStandaloneTetromino(sb, line - 2 * this.scale, this.game.getHold());
+            sb.append(" ".repeat(this.scale * 2));
         }
 
         sb.append("│");
@@ -192,21 +184,21 @@ public class CLI implements Runnable {
         sb.append("│");
 
         if (line < this.scale) {
-            sb.append(" ".repeat((this.scale - 1) * 2 + 1))
+            sb.append(" ".repeat(this.scale * 2))
                     .append(CLI.NEXT_TEXT[this.scale - 1][line])
-                    .append(" ".repeat((this.scale - 1) * 2 + 1));
-        } else if (line == this.scale
-                || (3 * this.scale) - (line - this.scale - 1) % (3 * this.scale) <= this.scale
+                    .append(" ".repeat(this.scale * 2));
+        } else if (line < 2 * this.scale
+                || (line - 2 * this.scale) % (3 * this.scale) >= 2 * this.scale
                 || line > 13 * this.scale) {
-            sb.append("  ".repeat(5 + 4 * (this.scale - 1)));
+            sb.append(" ".repeat(12 * this.scale));
         } else {
             List<AbstractTetromino> next = this.game.getPreview();
 
-            int l = line - this.scale - 1;
+            int l = line - 2 * this.scale;
 
-            sb.append(" ");
+            sb.append(" ".repeat(this.scale * 2));
             this.appendStandaloneTetromino(sb, l % (3 * this.scale), next.get(l / (3 * this.scale)));
-            sb.append(" ");
+            sb.append(" ".repeat(this.scale * 2));
         }
 
         sb.append("\n");
@@ -216,9 +208,9 @@ public class CLI implements Runnable {
         StringBuilder sb = new StringBuilder((this.scale * 18 + 5) * this.scale * 20);
 
         sb
-                .append("  ".repeat(1 + 4 * this.scale))
+                .append("  ".repeat(6 * this.scale))
                 .append("┌").append("─".repeat(this.scale * 20)).append("┐")
-                .append("  ".repeat(1 + 4 * this.scale))
+                .append("  ".repeat(6 * this.scale))
                 .append("\n");
 
         for (int i = 0; i < this.scale * 20; i++) {
@@ -233,9 +225,9 @@ public class CLI implements Runnable {
         }
 
         sb
-                .append("  ".repeat(1 + 4 * this.scale))
+                .append("  ".repeat(6 * this.scale))
                 .append("└").append("─".repeat(this.scale * 20)).append("┘")
-                .append("  ".repeat(1 + 4 * this.scale))
+                .append("  ".repeat(6 * this.scale))
                 .append("\n");
 
         return sb.toString().split("\n");
