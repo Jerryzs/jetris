@@ -5,8 +5,9 @@ import model.tetromino.AbstractTetromino;
 import java.util.*;
 
 public class Game extends TimerTask {
-    public static final int FRAMERATE = 50;
     private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 6;
+
+    public final int framerate = 50;
 
     private final Playfield playfield;
     private final RandomBag bag;
@@ -23,18 +24,18 @@ public class Game extends TimerTask {
     private boolean paused;
     private boolean over;
 
-    private final Runnable updateInput;
+    private final Runnable draw;
 
     public Game() {
-        this(null);
+        this(null, 30);
     }
 
-    public Game(Runnable updateInput) {
-        this(updateInput, new Playfield(), new RandomBag(), null);
+    public Game(Runnable draw, int framerate) {
+        this(draw, framerate, new Playfield(), new RandomBag(), null);
     }
 
-    public Game(Runnable updateInput, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
-        this.updateInput = updateInput;
+    public Game(Runnable draw, int framerate, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
+        this.draw = draw;
         this.playfield = playfield;
         this.bag = bag;
 
@@ -43,7 +44,7 @@ public class Game extends TimerTask {
         this.gravity = 0.01667;
 
         Timer timer = new Timer();
-        timer.schedule(this, 0, 1000 / Game.FRAMERATE);
+        timer.schedule(this, 0, 1000 / this.framerate);
 
     }
 
@@ -66,8 +67,9 @@ public class Game extends TimerTask {
     public List<AbstractTetromino> getPreview() {
         List<AbstractTetromino> preview = this.bag.getPreview();
 
-        if (this.playfield.getCurrent() != null && this.playfield.getCurrent().isHidden()) {
-            preview.add(0, this.playfield.getCurrent());
+        AbstractTetromino current = this.playfield.getCurrent();
+        if (current != null && current.isHidden()) {
+            preview.add(0, current);
             preview.remove(preview.size() - 1);
             return preview;
         }
@@ -150,11 +152,15 @@ public class Game extends TimerTask {
 
         this.holdingAllowed = true;
 
-        this.moveCells = 1 / (21600 * this.gravity * Math.pow(Game.FRAMERATE, 3));
+        this.moveCells = 1 / (21600 * this.gravity * Math.pow(this.framerate, 3));
     }
 
     @Override
     public void run() {
+        if (this.draw != null) {
+            this.draw.run();
+        }
+
         if (paused) {
             return;
         }
@@ -167,19 +173,15 @@ public class Game extends TimerTask {
             }
         }
 
-        this.moveCells += this.gravity * 60 / Game.FRAMERATE;
+        this.moveCells += this.gravity * 60 / this.framerate;
 
         if (this.playfield.isReadyToLock()) {
             this.lockFrameCounter++;
 
-            if (this.lockFrameCounter >= Game.FRAMERATE / 2
+            if (this.lockFrameCounter >= this.framerate / 2
                     || this.lockFrameCounterResetCounter >= Game.LOCK_FRAME_COUNTER_RESET_LIMIT) {
                 this.lockdown();
             }
-        }
-
-        if (this.updateInput != null) {
-            this.updateInput.run();
         }
     }
 }

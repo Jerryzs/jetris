@@ -19,7 +19,7 @@ public class GameTest {
         this.randomBag = new RandomBag();
         this.tetromino = new T();
 
-        this.game = new Game(null, this.playfield, this.randomBag, this.tetromino);
+        this.game = new Game(null, 30, this.playfield, this.randomBag, this.tetromino);
 
         this.game.toggleGame();
     }
@@ -33,7 +33,7 @@ public class GameTest {
         assertEquals(AbstractTetromino.num(4, 20), AbstractTetromino.num(this.tetromino.getCoords()));
 
         this.game.toggleGame();
-        for (int i = 0; i <= 1 / (0.01667 * 60 / Game.FRAMERATE) + 10; i++) {
+        for (int i = 0; i <= 1 / (0.01667 * 60 / this.game.framerate) + 10; i++) {
             this.game.run();
         }
         this.game.toggleGame();

@@ -37,6 +37,7 @@ public class Playfield {
     }
 
     protected AbstractTetromino swapCurrent(AbstractTetromino tetromino) {
+        this.readyToLock = false;
         AbstractTetromino c = this.current;
 
         if (tetromino == null) {

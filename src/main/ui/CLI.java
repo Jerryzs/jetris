@@ -13,12 +13,8 @@ import model.tetromino.CommonKickedTetromino;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class CLI extends TimerTask {
-    private static final int REFRESH_RATE = 50;
-
+public class CLI implements Runnable {
     private static final String[][] HOLD_TEXT = new String[][] {
             {"  HOLD  "},
             {
@@ -79,17 +75,17 @@ public class CLI extends TimerTask {
     private final TextGraphics textGraphics;
     private TerminalSize terminalSize;
 
-    public CLI(InputStream in, OutputStream out) throws IOException {
+    public CLI(InputStream in, OutputStream out, int refreshRate) throws IOException {
         this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
         this.screen.startScreen();
         this.screen.setCursorPosition(null);
 
         this.textGraphics = screen.newTextGraphics();
 
-        this.game = new Game(this::checkInput);
+        this.game = new Game(this, refreshRate);
 
-        Timer timer = new Timer();
-        timer.schedule(this, 0, 1000 / CLI.REFRESH_RATE);
+//        Timer timer = new Timer();
+//        timer.schedule(this, 0, 1000 / CLI.REFRESH_RATE);
 
         this.scale = Math.max(this.screen.getTerminalSize().getRows() / 22, 1);
     }
@@ -262,6 +258,7 @@ public class CLI extends TimerTask {
             }
 
             this.screen.refresh();
+            this.checkInput();
         } catch (IOException e) {
             System.exit(1);
             // continue
