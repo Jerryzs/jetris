@@ -1,6 +1,5 @@
 package model.tetromino;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class T  extends CommonKickedTetromino {

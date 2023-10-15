@@ -2,7 +2,9 @@ package model;
 
 import model.tetromino.AbstractTetromino;
 
-import java.util.*;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game extends TimerTask {
     private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 6;
