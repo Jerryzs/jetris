@@ -7,7 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game extends TimerTask {
-    private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 6;
+    private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 8;
 
     public final int framerate;
 
@@ -84,9 +84,9 @@ public class Game extends TimerTask {
         return this.playfield.get(x, y);
     }
 
-    public void hold() {
-        if (!this.holdingAllowed) {
-            return;
+    public boolean hold() {
+        if (!this.holdingAllowed || this.playfield.getCurrent() == null || this.playfield.getCurrent().isHidden()) {
+            return false;
         }
 
         this.lockFrameCounter = 0;
@@ -96,6 +96,8 @@ public class Game extends TimerTask {
         this.hold = this.playfield.swapCurrent(this.hold == null ? this.bag.pop() : this.hold);
         this.hold.reset();
         this.holdingAllowed = false;
+
+        return true;
     }
 
     public void softDrop() {
@@ -135,10 +137,7 @@ public class Game extends TimerTask {
 
     private void onMoveSuccessful() {
         this.lockFrameCounterResetCounter++;
-
-        if (this.lockFrameCounter > 0) {
-            this.lockFrameCounter = 0;
-        }
+        this.lockFrameCounter = 0;
 
         if (this.lockFrameCounterResetCounter < Game.LOCK_FRAME_COUNTER_RESET_LIMIT) {
             this.moveCells = 0;
