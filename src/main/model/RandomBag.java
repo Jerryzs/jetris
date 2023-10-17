@@ -28,9 +28,7 @@ public class RandomBag {
     }
 
     private void fillBag() {
-        if (this.bag.size() > 7) {
-            throw new IllegalStateException();
-        }
+        assert this.bag.size() <= 7;
 
         ArrayList<AbstractTetromino> b = new ArrayList<AbstractTetromino>(List.of(
                 new I(), new J(), new L(), new O(), new S(), new T(), new Z()
