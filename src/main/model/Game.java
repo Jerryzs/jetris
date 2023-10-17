@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class Game extends TimerTask {
     private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 6;
 
-    public final int framerate = 50;
+    public final int framerate;
 
     private final Playfield playfield;
     private final RandomBag bag;
@@ -38,6 +38,7 @@ public class Game extends TimerTask {
 
     public Game(Runnable draw, int framerate, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
         this.draw = draw;
+        this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
 
@@ -98,7 +99,7 @@ public class Game extends TimerTask {
     }
 
     public void softDrop() {
-        this.moveCells = 2;
+        this.moveCells = 1;
     }
 
     public void hardDrop() {
