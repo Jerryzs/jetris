@@ -15,56 +15,59 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@SuppressWarnings({"AvoidEscapedUnicodeCharacters", "SuppressWarnings"})
 public class CLI implements Runnable {
     private static final String[][] HOLD_TEXT = new String[][]{
             {"  HOLD  "},
             {
-                    " ▙▟  ▛▜  ▛   ▛▚ ",
-                    " ▘▝  ▀▀  ▀▀  ▀▀ ",
+                    " \u2599\u259F  \u259B\u259C  \u259B   \u259B\u259A ",
+                    " \u2598\u259D  \u2580\u2580  \u2580\u2580  \u2580\u2580 ",
             },
             {
-                    " █ █   █▀█   █     █▀▄  ",
-                    " █▄█   █ █   █     █ █  ",
-                    " █ █   █▄█   █▄▄   █▄▀  "
+                    "   \u2588 \u2588  \u2588\u2580\u2588  \u2588    \u2588\u2580\u2584   ",
+                    "   \u2588\u2584\u2588  \u2588 \u2588  \u2588    \u2588 \u2588   ",
+                    "   \u2588 \u2588  \u2588\u2584\u2588  \u2588\u2584\u2584  \u2588\u2584\u2580   "
             },
             {
-                    "  █  █     ██     █       ███   ",
-                    "  █▄▄█    █  █    █       █  █  ",
-                    "  █▀▀█    █  █    █       █  █  ",
-                    "  █  █     ██     ████    ███   "
+                    "  \u2588  \u2588     \u2588\u2588     \u2588       \u2588\u2588\u2588   ",
+                    "  \u2588\u2584\u2584\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
+                    "  \u2588\u2580\u2580\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
+                    "  \u2588  \u2588     \u2588\u2588     \u2588\u2588\u2588\u2588    \u2588\u2588\u2588   "
             },
             {
-                    "  █   █      ███      █         ████    ",
-                    "  █   █     █   █     █         █   █   ",
-                    "  █████     █   █     █         █   █   ",
-                    "  █   █     █   █     █         █   █   ",
-                    "  █   █      ███      █████     ████    "
+                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588        \u2588\u2588\u2588\u2588     ",
+                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588\u2588\u2588\u2588\u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588\u2588\u2588\u2588\u2588    "
+                    + "\u2588\u2588\u2588\u2588     "
             }
     };
 
     private static final String[][] NEXT_TEXT = new String[][]{
             {"  NEXT  "},
             {
-                    " ▛▜  ▛▘  ▚▞  ▜▛ ",
-                    " ▘▝  ▀▀  ▘▝  ▝▘ "
+                    " \u259B\u259C  \u259B\u2598  \u259A\u259E  \u259C\u259B ",
+                    " \u2598\u259D  \u2580\u2580  \u2598\u259D  \u259D\u2598 "
             },
             {
-                    " █▀█   █▀▀   █ █   ███  ",
-                    " █ █   █▄     █     █   ",
-                    " █ █   █▄▄   █ █    █   "
+                    "   \u2588\u2580\u2588  \u2588\u2580\u2580  \u2588 \u2588  \u2588\u2588\u2588   ",
+                    "   \u2588 \u2588  \u2588\u2584    \u2588    \u2588    ",
+                    "   \u2588 \u2588  \u2588\u2584\u2584  \u2588 \u2588   \u2588    "
             },
             {
-                    "  █▌ █    ████    █  █    ████  ",
-                    "  █▐ █    █        ▚▛      ▐▌   ",
-                    "  █ ▌█    █▀▀      ▞▙      ▐▌   ",
-                    "  █ ▐█    █▄▄▄    █  █     ▐▌   "
+                    "  \u2588\u258C \u2588    \u2588\u2588\u2588\u2588    \u2588  \u2588    \u2588\u2588\u2588\u2588  ",
+                    "  \u2588\u2590 \u2588    \u2588        \u259A\u259B      \u2590\u258C   ",
+                    "  \u2588 \u258C\u2588    \u2588\u2580\u2580      \u259E\u2599      \u2590\u258C   ",
+                    "  \u2588 \u2590\u2588    \u2588\u2584\u2584\u2584    \u2588  \u2588     \u2590\u258C   "
             },
             {
-                    "  █▌  █     ████     █   █     █████   ",
-                    "  █▐▌ █     █         █ █        █     ",
-                    "  █ █ █     ███        █         █     ",
-                    "  █ ▐▌█     █         █ █        █     ",
-                    "  █  ▐█     ████     █   █       █     "
+                    "    \u2588\u258C  \u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588    "
+                    + "\u2588\u2588\u2588\u2588\u2588    ",
+                    "    \u2588\u2590\u258C \u2588    \u2588        \u2588 \u2588       \u2588      ",
+                    "    \u2588 \u2588 \u2588    \u2588\u2588\u2588       \u2588        \u2588      ",
+                    "    \u2588 \u2590\u258C\u2588    \u2588        \u2588 \u2588       \u2588      ",
+                    "    \u2588  \u2590\u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588      \u2588      "
             }
     };
 
@@ -153,7 +156,7 @@ public class CLI implements Runnable {
     }
 
     private void appendHorizontalBlock(StringBuilder sb, boolean condition) {
-        sb.append((condition ? "██" : "  ").repeat(this.scale));
+        sb.append((condition ? "\u2588\u2588" : "  ").repeat(this.scale));
     }
 
     private void appendStandaloneTetromino(StringBuilder sb, int line, AbstractTetromino tetromino) {
@@ -176,11 +179,11 @@ public class CLI implements Runnable {
             sb.append(" ".repeat(this.scale * 2));
         }
 
-        sb.append("│");
+        sb.append("\u2502");
     }
 
     private void appendRightPadding(StringBuilder sb, int line) {
-        sb.append("│");
+        sb.append("\u2502");
 
         if (line < this.scale) {
             sb.append(" ".repeat(this.scale * 2))
@@ -208,7 +211,7 @@ public class CLI implements Runnable {
 
         sb
                 .append("  ".repeat(6 * this.scale))
-                .append("┌").append("─".repeat(this.scale * 20)).append("┐")
+                .append("\u250C").append("\u2500".repeat(this.scale * 20)).append("\u2510")
                 .append("  ".repeat(6 * this.scale))
                 .append("\n");
 
@@ -225,7 +228,7 @@ public class CLI implements Runnable {
 
         sb
                 .append("  ".repeat(6 * this.scale))
-                .append("└").append("─".repeat(this.scale * 20)).append("┘")
+                .append("\u2514").append("\u2500".repeat(this.scale * 20)).append("\u2518")
                 .append("  ".repeat(6 * this.scale))
                 .append("\n");
 
