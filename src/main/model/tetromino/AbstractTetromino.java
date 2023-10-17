@@ -35,6 +35,10 @@ public abstract class AbstractTetromino {
         return new int[]{this.coords[0], this.coords[1]};
     }
 
+    public Direction getOrientation() {
+        return this.orientation;
+    }
+
     public boolean isHidden() {
         return this.coords[1] == 20;
     }
