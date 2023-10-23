@@ -15,7 +15,8 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@SuppressWarnings({"AvoidEscapedUnicodeCharacters", "SuppressWarnings"})
+// suppress necessary workaround for ascii auto-test program
+@SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
 public class CLI implements Runnable {
     private static final String[][] HOLD_TEXT = new String[][]{
             {"  HOLD  "},
