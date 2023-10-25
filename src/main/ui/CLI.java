@@ -18,67 +18,13 @@ import java.util.List;
 // suppress necessary workaround for ascii auto-test program
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
 public class CLI implements Runnable {
-    private static final String[][] HOLD_TEXT = new String[][]{
-            {"  HOLD  "},
-            {
-                    " \u2599\u259F  \u259B\u259C  \u259B   \u259B\u259A ",
-                    " \u2598\u259D  \u2580\u2580  \u2580\u2580  \u2580\u2580 ",
-            },
-            {
-                    "   \u2588 \u2588  \u2588\u2580\u2588  \u2588    \u2588\u2580\u2584   ",
-                    "   \u2588\u2584\u2588  \u2588 \u2588  \u2588    \u2588 \u2588   ",
-                    "   \u2588 \u2588  \u2588\u2584\u2588  \u2588\u2584\u2584  \u2588\u2584\u2580   "
-            },
-            {
-                    "  \u2588  \u2588     \u2588\u2588     \u2588       \u2588\u2588\u2588   ",
-                    "  \u2588\u2584\u2584\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
-                    "  \u2588\u2580\u2580\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
-                    "  \u2588  \u2588     \u2588\u2588     \u2588\u2588\u2588\u2588    \u2588\u2588\u2588   "
-            },
-            {
-                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588        \u2588\u2588\u2588\u2588     ",
-                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
-                    "    \u2588\u2588\u2588\u2588\u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
-                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
-                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588\u2588\u2588\u2588\u2588    "
-                    + "\u2588\u2588\u2588\u2588     "
-            }
-    };
-
-    private static final String[][] NEXT_TEXT = new String[][]{
-            {"  NEXT  "},
-            {
-                    " \u259B\u259C  \u259B\u2598  \u259A\u259E  \u259C\u259B ",
-                    " \u2598\u259D  \u2580\u2580  \u2598\u259D  \u259D\u2598 "
-            },
-            {
-                    "   \u2588\u2580\u2588  \u2588\u2580\u2580  \u2588 \u2588  \u2588\u2588\u2588   ",
-                    "   \u2588 \u2588  \u2588\u2584    \u2588    \u2588    ",
-                    "   \u2588 \u2588  \u2588\u2584\u2584  \u2588 \u2588   \u2588    "
-            },
-            {
-                    "  \u2588\u258C \u2588    \u2588\u2588\u2588\u2588    \u2588  \u2588    \u2588\u2588\u2588\u2588  ",
-                    "  \u2588\u2590 \u2588    \u2588        \u259A\u259B      \u2590\u258C   ",
-                    "  \u2588 \u258C\u2588    \u2588\u2580\u2580      \u259E\u2599      \u2590\u258C   ",
-                    "  \u2588 \u2590\u2588    \u2588\u2584\u2584\u2584    \u2588  \u2588     \u2590\u258C   "
-            },
-            {
-                    "    \u2588\u258C  \u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588    "
-                    + "\u2588\u2588\u2588\u2588\u2588    ",
-                    "    \u2588\u2590\u258C \u2588    \u2588        \u2588 \u2588       \u2588      ",
-                    "    \u2588 \u2588 \u2588    \u2588\u2588\u2588       \u2588        \u2588      ",
-                    "    \u2588 \u2590\u258C\u2588    \u2588        \u2588 \u2588       \u2588      ",
-                    "    \u2588  \u2590\u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588      \u2588      "
-            }
-    };
-
-    private int scale;
-
     private final Game game;
 
     private final TerminalScreen screen;
     private final TextGraphics textGraphics;
+
     private TerminalSize terminalSize;
+    private int scale;
 
     public CLI(InputStream in, OutputStream out, int refreshRate) {
         try {
@@ -92,9 +38,6 @@ public class CLI implements Runnable {
         }
 
         this.game = new Game(this, refreshRate);
-
-//        Timer timer = new Timer();
-//        timer.schedule(this, 0, 1000 / CLI.REFRESH_RATE);
     }
 
     private void checkInput() throws IOException {
@@ -142,7 +85,7 @@ public class CLI implements Runnable {
     }
 
     private void updateTerminalSize() {
-        TerminalSize newSize = screen.doResizeIfNecessary();
+        TerminalSize newSize = this.screen.doResizeIfNecessary();
         if (newSize != null) {
             this.terminalSize = newSize;
         }
@@ -247,7 +190,7 @@ public class CLI implements Runnable {
 
             int x = this.getCenterLeftLimit(text[0].length());
             for (int i = 0; i < text.length; i++) {
-                textGraphics.putString(x, i, text[i]);
+                this.textGraphics.putString(x, i, text[i]);
             }
 
             this.screen.refresh();
@@ -256,4 +199,58 @@ public class CLI implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
+    private static final String[][] HOLD_TEXT = new String[][]{
+            {"  HOLD  "},
+            {
+                    " \u2599\u259F  \u259B\u259C  \u259B   \u259B\u259A ",
+                    " \u2598\u259D  \u2580\u2580  \u2580\u2580  \u2580\u2580 ",
+            },
+            {
+                    "   \u2588 \u2588  \u2588\u2580\u2588  \u2588    \u2588\u2580\u2584   ",
+                    "   \u2588\u2584\u2588  \u2588 \u2588  \u2588    \u2588 \u2588   ",
+                    "   \u2588 \u2588  \u2588\u2584\u2588  \u2588\u2584\u2584  \u2588\u2584\u2580   "
+            },
+            {
+                    "  \u2588  \u2588     \u2588\u2588     \u2588       \u2588\u2588\u2588   ",
+                    "  \u2588\u2584\u2584\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
+                    "  \u2588\u2580\u2580\u2588    \u2588  \u2588    \u2588       \u2588  \u2588  ",
+                    "  \u2588  \u2588     \u2588\u2588     \u2588\u2588\u2588\u2588    \u2588\u2588\u2588   "
+            },
+            {
+                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588        \u2588\u2588\u2588\u2588     ",
+                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588\u2588\u2588\u2588\u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588   \u2588    \u2588   \u2588    \u2588        \u2588   \u2588    ",
+                    "    \u2588   \u2588     \u2588\u2588\u2588     \u2588\u2588\u2588\u2588\u2588    "
+                            + "\u2588\u2588\u2588\u2588     "
+            }
+    };
+
+    private static final String[][] NEXT_TEXT = new String[][]{
+            {"  NEXT  "},
+            {
+                    " \u259B\u259C  \u259B\u2598  \u259A\u259E  \u259C\u259B ",
+                    " \u2598\u259D  \u2580\u2580  \u2598\u259D  \u259D\u2598 "
+            },
+            {
+                    "   \u2588\u2580\u2588  \u2588\u2580\u2580  \u2588 \u2588  \u2588\u2588\u2588   ",
+                    "   \u2588 \u2588  \u2588\u2584    \u2588    \u2588    ",
+                    "   \u2588 \u2588  \u2588\u2584\u2584  \u2588 \u2588   \u2588    "
+            },
+            {
+                    "  \u2588\u258C \u2588    \u2588\u2588\u2588\u2588    \u2588  \u2588    \u2588\u2588\u2588\u2588  ",
+                    "  \u2588\u2590 \u2588    \u2588        \u259A\u259B      \u2590\u258C   ",
+                    "  \u2588 \u258C\u2588    \u2588\u2580\u2580      \u259E\u2599      \u2590\u258C   ",
+                    "  \u2588 \u2590\u2588    \u2588\u2584\u2584\u2584    \u2588  \u2588     \u2590\u258C   "
+            },
+            {
+                    "    \u2588\u258C  \u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588    "
+                            + "\u2588\u2588\u2588\u2588\u2588    ",
+                    "    \u2588\u2590\u258C \u2588    \u2588        \u2588 \u2588       \u2588      ",
+                    "    \u2588 \u2588 \u2588    \u2588\u2588\u2588       \u2588        \u2588      ",
+                    "    \u2588 \u2590\u258C\u2588    \u2588        \u2588 \u2588       \u2588      ",
+                    "    \u2588  \u2590\u2588    \u2588\u2588\u2588\u2588    \u2588   \u2588      \u2588      "
+            }
+    };
 }
