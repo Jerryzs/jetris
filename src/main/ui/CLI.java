@@ -15,7 +15,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-// suppress necessary workaround for ascii auto-test program
+// suppress warnings on necessary workarounds for ascii auto-test programs
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
 public class CLI implements Runnable {
     private final Game game;
@@ -26,6 +26,17 @@ public class CLI implements Runnable {
     private TerminalSize terminalSize;
     private int scale;
 
+    /**
+     * REQUIRES: in != null and out != null and refreshRate > 0
+     * <p>
+     * EFFECTS: Set up the Lanterna terminal screen and create a new game
+     * session.
+     *
+     * @param in          InputStream of the terminal
+     * @param out         OutputStream of the terminal
+     * @param refreshRate The number of times the game (and screen) is updated
+     *                    per second
+     */
     public CLI(InputStream in, OutputStream out, int refreshRate) {
         try {
             this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
@@ -40,6 +51,16 @@ public class CLI implements Runnable {
         this.game = new Game(this, refreshRate);
     }
 
+    /**
+     * REQUIRES: this.screen != null and this.game != null
+     * <p>
+     * MODIFIES: this
+     * <p>
+     * EFFECTS: Check for any user input in the buffer from Lanterna and perform
+     * any appropriate actions with respect to the input.
+     *
+     * @throws IOException Error propagated from the underlying stream.
+     */
     private void checkInput() throws IOException {
         KeyStroke key = this.screen.pollInput();
 
@@ -66,6 +87,16 @@ public class CLI implements Runnable {
         }
     }
 
+    /**
+     * REQUIRES: this.game != null
+     * <p>
+     * MODIFIES" this.game
+     * <p>
+     * EFFECTS" Perform the appropriate action for a keyboard character (ideally
+     * retrieved as a user input).
+     *
+     * @param key The keyboard character.
+     */
     private void handleInput(char key) {
         if (key == 'w') {
             this.game.hold();
@@ -84,6 +115,14 @@ public class CLI implements Runnable {
         }
     }
 
+    /**
+     * REQUIRES: this.screen != null
+     * <p>
+     * MODIFIES: this
+     * <p>
+     * EFFECTS: Check if the terminal has been resized and update this with the
+     * new terminal size.
+     */
     private void updateTerminalSize() {
         TerminalSize newSize = this.screen.doResizeIfNecessary();
         if (newSize != null) {
@@ -91,6 +130,15 @@ public class CLI implements Runnable {
         }
     }
 
+    /**
+     * REQUIRES: width >= 0
+     * <p>
+     * EFFECTS: Calculate the column (x coordinate) to start drawing for the
+     * game to be centered in the terminal.
+     *
+     * @param width The width of the terminal screen
+     * @return The column to start drawing from
+     */
     private int getCenterLeftLimit(int width) {
         if (this.terminalSize == null || this.terminalSize.getColumns() < width) {
             return 0;
@@ -99,10 +147,36 @@ public class CLI implements Runnable {
         return this.terminalSize.getColumns() / 2 - width / 2;
     }
 
+    /**
+     * REQUIRES: sb != null
+     * <p>
+     * MODIFIES: sb
+     * <p>
+     * EFFECTS: Append a scaled square block with box drawing unicode characters
+     * to the StringBuilder if the condition is true; otherwise, append an empty
+     * space the size of a scaled square block.
+     *
+     * @param sb        The StringBuilder object to append to
+     * @param condition Whether to append a solid block or an empty space
+     */
     private void appendHorizontalBlock(StringBuilder sb, boolean condition) {
         sb.append((condition ? "\u2588\u2588" : "  ").repeat(this.scale));
     }
 
+    /**
+     * REQUIRES: sb != null and line in {0, 1} and tetromino != null
+     * <p>
+     * MODIFIES: sb
+     * <p>
+     * EFFECTS: Append the specific line of the default state of a tetromino to
+     * the StringBuilder.
+     *
+     * @param sb        The StringBuilder object to append to
+     * @param line      The line of the tetromino to append. Since the maximum
+     *                  number of lines occupied by the default state of any
+     *                  tetromino is 2, this argument can only accept 0 or 1.
+     * @param tetromino The tetromino whose default state is to be used
+     */
     private void appendStandaloneTetromino(StringBuilder sb, int line, AbstractTetromino tetromino) {
         int l = line / this.scale;
         for (int k = 0; k < 4; k++) {
@@ -110,6 +184,17 @@ public class CLI implements Runnable {
         }
     }
 
+    /**
+     * REQUIRES: sb != null and line >= 0 and this.game != null
+     * <p>
+     * MODIFIES: sb
+     * <p>
+     * EFFECTS: Append the appropriate texts or drawings for the left margin in
+     * the specified line to the StringBuilder.
+     *
+     * @param sb   The StringBuilder to append to
+     * @param line The line which the left margin is for
+     */
     private void appendLeftPadding(StringBuilder sb, int line) {
         if (line < this.scale) {
             sb.append(" ".repeat(this.scale * 2))
@@ -126,6 +211,17 @@ public class CLI implements Runnable {
         sb.append("\u2502");
     }
 
+    /**
+     * REQUIRES: line >= 0 and this.game != null
+     * <p>
+     * MODIFIES: sb
+     * <p>
+     * EFFECTS: Append the appropriate texts or drawings for the right margin in
+     * the specified line to the StringBuilder.
+     *
+     * @param sb   The StringBuilder to append to
+     * @param line The line which the right margin is for
+     */
     private void appendRightPadding(StringBuilder sb, int line) {
         sb.append("\u2502");
 
@@ -150,6 +246,16 @@ public class CLI implements Runnable {
         sb.append("\n");
     }
 
+    /**
+     * REQUIRES: this.game != null
+     * <p>
+     * EFFECTS: Create an array of strings as the graphical representation of
+     * the current state of the game, using unicode box drawing characters. Each
+     * element of the array corresponds to a line that can be printed to a
+     * terminal to form a 2-dimensional drawing of the game.
+     *
+     * @return An array of String objects that represents the game
+     */
     private String[] getGameRepresentation() {
         StringBuilder sb = new StringBuilder((this.scale * 18 + 5) * this.scale * 20);
 
@@ -179,6 +285,15 @@ public class CLI implements Runnable {
         return sb.toString().split("\n");
     }
 
+    /**
+     * REQUIRES: this.screen != null and this.textGraphics != null and this.game
+     * != null
+     * <p>
+     * MODIFIES: this.screen
+     * <p>
+     * EFFECTS: Draw the most up-to-date frame of the game to the terminal
+     * screen.
+     */
     @Override
     public void run() {
         this.updateTerminalSize();
@@ -200,6 +315,11 @@ public class CLI implements Runnable {
         }
     }
 
+    /**
+     * The "HOLD" text at scale 1-5. {@code CLI.HOLD_TEXT[scale - 1]} gives an
+     * array of {@code length == scale}, with each element being a line to be
+     * printed for the scaled text.
+     */
     private static final String[][] HOLD_TEXT = new String[][]{
             {"  HOLD  "},
             {
@@ -227,6 +347,11 @@ public class CLI implements Runnable {
             }
     };
 
+    /**
+     * The "NEXT" text at scale 1-5. {@code CLI.NEXT_TEXT[scale - 1]} gives an
+     * array of {@code length == scale}, with each element being a line to be
+     * printed for the scaled text.
+     */
     private static final String[][] NEXT_TEXT = new String[][]{
             {"  NEXT  "},
             {
