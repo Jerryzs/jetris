@@ -22,7 +22,7 @@ public class GameTest {
 
     @BeforeEach
     void runBefore() {
-        this.defaultGame = new Game();
+        this.defaultGame = new Game(30);
         this.defaultGame.toggleGame();
 
         this.playfield = new Playfield();

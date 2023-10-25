@@ -28,8 +28,8 @@ public class Game extends TimerTask {
 
     private final Runnable draw;
 
-    public Game() {
-        this(null, 30);
+    public Game(int framerate) {
+        this(null, framerate);
     }
 
     public Game(Runnable draw, int framerate) {
