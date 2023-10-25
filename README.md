@@ -8,14 +8,17 @@ The Tetris® gameplay (which Jetris implements) has shown beneficial effects to 
 
 I want to be able to
 
-- start a new game session
-- see the playfield 
-- see the queue of upcoming tetrominoes that are shuffled with the 7 bag
-- add a tetromino to the hold area
-- place a tetromino down
-- clear a line
-- rotate a tetromino
-- end the game when the game is over
+- ~~start a new game session~~
+- ~~see the playfield~~
+- ~~see the queue of upcoming tetrominoes that are shuffled with the 7 bag~~
+- ~~add a tetromino to the hold area~~
+- ~~place a tetromino down~~
+- ~~clear a line~~
+- ~~rotate a tetromino~~
+- ~~end the game when the game is over~~
 - see the score when the game is over
 - level up as score increases
 - speed up the game as level increases
+- pause the game
+- save the game to a file once the game is paused
+- load the game from a file in the starting screen
