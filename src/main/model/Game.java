@@ -3,16 +3,14 @@ package model;
 import model.tetromino.AbstractTetromino;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class Game extends TimerTask {
+public class Game implements Runnable {
     private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 8;
-
-    public final int framerate;
 
     private final Playfield playfield;
     private final RandomBag bag;
+
+    private int framerate;
 
     private AbstractTetromino hold;
     private boolean holdingAllowed = true;
@@ -26,18 +24,11 @@ public class Game extends TimerTask {
     private boolean paused;
     private boolean over;
 
-    private final Runnable draw;
-
     public Game(int framerate) {
-        this(null, framerate);
+        this(framerate, new Playfield(), new RandomBag(), null);
     }
 
-    public Game(Runnable draw, int framerate) {
-        this(draw, framerate, new Playfield(), new RandomBag(), null);
-    }
-
-    public Game(Runnable draw, int framerate, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
-        this.draw = draw;
+    public Game(int framerate, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
         this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
@@ -45,10 +36,6 @@ public class Game extends TimerTask {
         this.playfield.spawn(spawn == null ? bag.pop() : spawn);
 
         this.gravity = 0.01667;
-
-        Timer timer = new Timer();
-        timer.schedule(this, 0, 1000 / this.framerate);
-
     }
 
     public void toggleGame() {
@@ -159,10 +146,6 @@ public class Game extends TimerTask {
 
     @Override
     public void run() {
-        if (this.draw != null) {
-            this.draw.run();
-        }
-
         if (paused) {
             return;
         }

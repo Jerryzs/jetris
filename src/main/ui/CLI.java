@@ -14,10 +14,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // suppress warnings on necessary workarounds for ascii auto-test programs
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
-public class CLI implements Runnable {
+public class CLI extends TimerTask {
     private final Game game;
 
     private final TerminalScreen screen;
@@ -32,12 +34,12 @@ public class CLI implements Runnable {
      * EFFECTS: Set up the Lanterna terminal screen and create a new game
      * session.
      *
-     * @param in          InputStream of the terminal
-     * @param out         OutputStream of the terminal
-     * @param refreshRate The number of times the game (and screen) is updated
-     *                    per second
+     * @param in        InputStream of the terminal
+     * @param out       OutputStream of the terminal
+     * @param framerate The number of times the game (and screen) is updated per
+     *                  second
      */
-    public CLI(InputStream in, OutputStream out, int refreshRate) {
+    public CLI(InputStream in, OutputStream out, int framerate) {
         try {
             this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
             this.screen.startScreen();
@@ -48,7 +50,12 @@ public class CLI implements Runnable {
             throw new RuntimeException(e);
         }
 
-        this.game = new Game(this, refreshRate);
+        this.game = new Game(framerate);
+
+        Timer timer = new Timer();
+        timer.schedule(this, 0, 1000 / framerate);
+
+        this.frameCountStartTime = System.currentTimeMillis();
     }
 
     /**
@@ -313,6 +320,8 @@ public class CLI implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.game.run();
     }
 
     /**

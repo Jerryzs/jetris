@@ -29,7 +29,7 @@ public class GameTest {
         this.randomBag = new RandomBag();
         this.tetromino = new T();
 
-        this.game = new Game(() -> drawCount++, 10, this.playfield, this.randomBag, this.tetromino);
+        this.game = new Game(10, this.playfield, this.randomBag, this.tetromino);
         this.game.toggleGame();
     }
 
