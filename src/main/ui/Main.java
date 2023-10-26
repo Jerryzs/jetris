@@ -2,11 +2,11 @@ package ui;
 
 public class Main {
     public static void main(String[] args) {
-        int refreshRate = 50;
+        int framerate = 60;
         if (args.length > 0) {
-            refreshRate = Integer.parseInt(args[0]);
+            framerate = Integer.parseInt(args[0]);
         }
 
-        new CLI(System.in, System.out, refreshRate);
+        new CLI(System.in, System.out, framerate);
     }
 }

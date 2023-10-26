@@ -38,6 +38,14 @@ public class Game implements Runnable {
         this.gravity = 0.01667;
     }
 
+    public void framerate(int framerate) {
+        this.framerate = framerate;
+    }
+
+    public int framerate() {
+        return this.framerate;
+    }
+
     public void toggleGame() {
         this.paused = !this.paused;
     }

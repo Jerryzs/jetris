@@ -28,6 +28,9 @@ public class CLI extends TimerTask {
     private TerminalSize terminalSize;
     private int scale;
 
+    private int frameCounter;
+    private long frameCountStartTime;
+
     /**
      * REQUIRES: in != null and out != null and refreshRate > 0
      * <p>
@@ -315,6 +318,8 @@ public class CLI extends TimerTask {
                 this.textGraphics.putString(x, i, text[i]);
             }
 
+            this.textGraphics.putString(0, 0, String.format("FPS: %d", this.game.framerate()));
+
             this.screen.refresh();
             this.checkInput();
         } catch (IOException e) {
@@ -322,6 +327,14 @@ public class CLI extends TimerTask {
         }
 
         this.game.run();
+
+        this.frameCounter++;
+
+        if (System.currentTimeMillis() - frameCountStartTime >= 1000) {
+            this.game.framerate(this.frameCounter);
+            this.frameCounter = 0;
+            this.frameCountStartTime = System.currentTimeMillis();
+        }
     }
 
     /**
