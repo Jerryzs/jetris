@@ -13,6 +13,14 @@ public class RandomBag {
         this.fillBag();
     }
 
+    public RandomBag(Queue<AbstractTetromino> queue) {
+        if (queue.size() <= 7) {
+            throw new IllegalArgumentException("The queue must have at least 7 tetrominoes.");
+        }
+
+        this.bag = queue;
+    }
+
     public AbstractTetromino pop() {
         AbstractTetromino t = this.bag.poll();
 
@@ -24,7 +32,11 @@ public class RandomBag {
     }
 
     public List<AbstractTetromino> getPreview() {
-        return new LinkedList<AbstractTetromino>(this.bag).subList(0, 4);
+        return new LinkedList<AbstractTetromino>(this.bag).subList(0, 5);
+    }
+
+    public Iterator<AbstractTetromino> getIterator() {
+        return this.bag.iterator();
     }
 
     private void fillBag() {

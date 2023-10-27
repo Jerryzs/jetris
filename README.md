@@ -19,6 +19,6 @@ I want to be able to
 - see the score when the game is over
 - level up as score increases
 - speed up the game as level increases
-- pause the game
-- save the game to a file once the game is paused
-- load the game from a file in the starting screen
+- ~~pause the game~~
+- ~~save the game to a file once the game is paused~~
+- ~~load the game from a file in the starting screen~~

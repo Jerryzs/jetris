@@ -5,6 +5,15 @@ import java.util.Set;
 public class S extends CommonKickedTetromino {
     private static final int[] STANDALONE = {0, 1, 1, 0, 1, 1, 0, 0};
 
+    public S() {
+        super();
+    }
+
+    public S(int[] coords, Direction orientation, int test) {
+        super(coords, orientation, test);
+    }
+
+
     @Override
     public int[] getStandalone() {
         return S.STANDALONE;

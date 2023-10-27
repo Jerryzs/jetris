@@ -8,6 +8,7 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import model.Game;
 import model.tetromino.AbstractTetromino;
+import persistence.Save;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,16 +21,20 @@ import java.util.TimerTask;
 // suppress warnings on necessary workarounds for ascii auto-test programs
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
 public class CLI extends TimerTask {
-    private final Game game;
+    private final int framerate;
+    private Game game;
 
     private final TerminalScreen screen;
     private final TextGraphics textGraphics;
 
     private TerminalSize terminalSize;
     private int scale;
+    private Menu menu;
 
     private int frameCounter;
     private long frameCountStartTime;
+
+    private Save save;
 
     /**
      * REQUIRES: in != null and out != null and refreshRate > 0
@@ -53,22 +58,41 @@ public class CLI extends TimerTask {
             throw new RuntimeException(e);
         }
 
-        this.game = new Game(framerate);
+        this.framerate = framerate;
+        this.menu = this.mainMenu();
 
         Timer timer = new Timer();
-        timer.schedule(this, 0, 1000 / framerate);
+        timer.schedule(this, 0, 500 / framerate);
+    }
+
+    private Menu mainMenu() {
+        return new Menu("Jetris")
+                .add("Start", this::handleGameStart)
+                .add("Load save", this::handleGameLoad)
+                .add("Exit", () -> System.exit(0));
+    }
+
+    private void handleGameStart() {
+        this.game = new Game(this.framerate);
+        this.save = new Save(this.game);
+        this.menu = null;
 
         this.frameCountStartTime = System.currentTimeMillis();
     }
 
+    private void handleGameLoad() {
+        this.save = new Save();
+        this.game = this.save.load();
+
+        if (this.game == null) {
+            this.menu.setMessage("Load failed");
+            return;
+        }
+
+        this.menu = null;
+    }
+
     /**
-     * REQUIRES: this.screen != null and this.game != null
-     * <p>
-     * MODIFIES: this
-     * <p>
-     * EFFECTS: Check for any user input in the buffer from Lanterna and perform
-     * any appropriate actions with respect to the input.
-     *
      * @throws IOException Error propagated from the underlying stream.
      */
     private void checkInput() throws IOException {
@@ -79,21 +103,57 @@ public class CLI extends TimerTask {
                 System.exit(0);
             }
 
-            if (key.getKeyType() == KeyType.Escape) {
-                this.game.toggleGame();
-            }
-
             if (key.getKeyType() == KeyType.Character) {
-                if (!this.game.isPaused()) {
-                    this.handleInput(Character.toLowerCase(key.getCharacter()));
-                }
-
                 if (key.getCharacter() == '=' && this.scale < 5) {
                     this.scale++;
                 } else if (key.getCharacter() == '-' && this.scale > 1) {
                     this.scale--;
                 }
             }
+
+            if (this.menu != null) {
+                this.checkMenuInput(key);
+            } else {
+                this.checkGameInput(key);
+            }
+        }
+    }
+
+    private void checkMenuInput(KeyStroke key) {
+        if (key.getKeyType() == KeyType.Escape) {
+            this.handleResume();
+        }
+
+        if (key.getKeyType() == KeyType.Enter) {
+            this.menu.trigger();
+        }
+
+        if (key.getKeyType() == KeyType.Character) {
+            if (key.getCharacter() == 'w') {
+                this.menu.prev();
+            } else if (key.getCharacter() == 's') {
+                this.menu.next();
+            } else if (key.getCharacter() == ' ') {
+                this.menu.trigger();
+            }
+        }
+    }
+
+    /**
+     * REQUIRES: this.screen != null and this.game != null
+     * <p>
+     * MODIFIES: this
+     * <p>
+     * EFFECTS: Check for any user input in the buffer from Lanterna and perform
+     * any appropriate actions with respect to the input.
+     */
+    private void checkGameInput(KeyStroke key) {
+        if (key.getKeyType() == KeyType.Escape) {
+            this.handlePause();
+        }
+
+        if (key.getKeyType() == KeyType.Character) {
+            this.handleInput(Character.toLowerCase(key.getCharacter()));
         }
     }
 
@@ -123,6 +183,29 @@ public class CLI extends TimerTask {
         } else if (key == ' ') {
             this.game.hardDrop();
         }
+    }
+
+    private void handlePause() {
+        this.game.toggleGame();
+        this.menu = new Menu("Paused")
+                .add("Resume", this::handleResume)
+                .add("Save", this::handleSave)
+                .add("Main menu", this::handleReturn)
+                .add("Exit", () -> System.exit(0));
+    }
+
+    private void handleResume() {
+        this.game.toggleGame();
+        this.menu = null;
+    }
+
+    private void handleSave() {
+        this.menu.setMessage(this.save.store() ? "Saved!" : "Failed to save");
+    }
+
+    private void handleReturn() {
+        this.game = null;
+        this.menu = this.mainMenu();
     }
 
     /**
@@ -241,7 +324,7 @@ public class CLI extends TimerTask {
                     .append(" ".repeat(this.scale * 2));
         } else if (line < 2 * this.scale
                 || (line - 2 * this.scale) % (3 * this.scale) >= 2 * this.scale
-                || line > 13 * this.scale) {
+                || line > 16 * this.scale) {
             sb.append(" ".repeat(12 * this.scale));
         } else {
             List<AbstractTetromino> next = this.game.getPreview();
@@ -311,23 +394,29 @@ public class CLI extends TimerTask {
         try {
             this.screen.clear();
 
-            String[] text = this.getGameRepresentation();
+            String[] text = this.menu != null
+                    ? this.menu.getRepresentation(this.terminalSize.getRows()) : this.getGameRepresentation();
 
             int x = this.getCenterLeftLimit(text[0].length());
             for (int i = 0; i < text.length; i++) {
                 this.textGraphics.putString(x, i, text[i]);
             }
 
-            this.textGraphics.putString(0, 0, String.format("FPS: %d", this.game.framerate()));
-
             this.screen.refresh();
             this.checkInput();
+
+            if (this.game != null) {
+                this.textGraphics.putString(0, 0, String.format("FPS: %d", this.game.framerate()));
+
+                this.game.run();
+                this.countFrame();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        this.game.run();
-
+    private void countFrame() {
         this.frameCounter++;
 
         if (System.currentTimeMillis() - frameCountStartTime >= 1000) {

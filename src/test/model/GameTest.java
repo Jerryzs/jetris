@@ -29,7 +29,7 @@ public class GameTest {
         this.randomBag = new RandomBag();
         this.tetromino = new T();
 
-        this.game = new Game(10, this.playfield, this.randomBag, this.tetromino);
+        this.game = new Game(10, this.playfield, this.randomBag, this.tetromino, null, true);
         this.game.toggleGame();
     }
 
@@ -47,7 +47,7 @@ public class GameTest {
         List<AbstractTetromino> previewWithCurrent = new LinkedList<AbstractTetromino>();
 
         previewWithCurrent.add(this.tetromino);
-        previewWithCurrent.addAll(this.randomBag.getPreview().subList(0, 3));
+        previewWithCurrent.addAll(this.randomBag.getPreview().subList(0, 4));
 
         assertEquals(previewWithCurrent, this.game.getPreview());
 

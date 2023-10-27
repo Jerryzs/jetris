@@ -48,7 +48,7 @@ public class RandomBagTest {
         List<AbstractTetromino> actual = this.bag.getPreview();
         List<AbstractTetromino> expected = new LinkedList<AbstractTetromino>();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             expected.add(this.bag.pop());
         }
 

@@ -5,19 +5,27 @@ import java.util.Set;
 public class I extends AbstractTetromino {
     private static final int[] STANDALONE = {0, 0, 0, 0, 1, 1, 1, 1};
 
-    private static final int[][][] LEFT_KICK = new int[][][] {
-            {{ 0,  0}, {-1,  0}, { 2,  0}, {-1,  2}, { 2, -1}},
-            {{ 0,  0}, { 2,  0}, {-1,  0}, { 2,  1}, {-1, -2}},
-            {{ 0,  0}, { 1,  0}, {-2,  0}, { 1, -2}, {-2,  1}},
-            {{ 0,  0}, {-2,  0}, { 1,  0}, {-2, -1}, { 1,  2}},
+    private static final int[][][] LEFT_KICK = new int[][][]{
+            {{0, 0}, {-1, 0}, {2, 0}, {-1, 2}, {2, -1}},
+            {{0, 0}, {2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
+            {{0, 0}, {1, 0}, {-2, 0}, {1, -2}, {-2, 1}},
+            {{0, 0}, {-2, 0}, {1, 0}, {-2, -1}, {1, 2}},
     };
 
-    private static final int[][][] RIGHT_KICK = new int[][][] {
-            {{ 0,  0}, {-2,  0}, { 1,  0}, {-2, -1}, { 1,  2}},
-            {{ 0,  0}, {-1,  0}, { 2,  0}, {-1,  2}, { 2, -1}},
-            {{ 0,  0}, { 2,  0}, {-1,  0}, { 2,  1}, {-1, -2}},
-            {{ 0,  0}, { 1,  0}, {-2,  0}, { 1, -2}, {-2,  1}},
+    private static final int[][][] RIGHT_KICK = new int[][][]{
+            {{0, 0}, {-2, 0}, {1, 0}, {-2, -1}, {1, 2}},
+            {{0, 0}, {-1, 0}, {2, 0}, {-1, 2}, {2, -1}},
+            {{0, 0}, {2, 0}, {-1, 0}, {2, 1}, {-1, -2}},
+            {{0, 0}, {1, 0}, {-2, 0}, {1, -2}, {-2, 1}},
     };
+
+    public I() {
+        super();
+    }
+
+    public I(int[] coords, Direction orientation, int test) {
+        super(coords, orientation, test);
+    }
 
     @Override
     protected int[][][] getLeftKick() {

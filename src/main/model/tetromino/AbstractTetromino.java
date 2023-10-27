@@ -6,37 +6,38 @@ import java.util.Set;
 public abstract class AbstractTetromino {
     private static int count;
 
-    private int test = -1;
-    private int direction;
+    private int test;
 
     protected Direction orientation;
     protected int id;
     protected int[] coords;
 
     protected AbstractTetromino() {
+        this(new int[]{4, 20}, Direction.DOWN, 0);
+    }
+
+    protected AbstractTetromino(int[] coords, Direction orientation, int test) {
         this.id = ++count;
-        this.reset(true);
+        this.coords = coords;
+        this.orientation = orientation;
+        this.test = test;
     }
 
     public void reset() {
-        this.reset(false);
-    }
-
-    private void reset(boolean toBuffer) {
         this.orientation = Direction.DOWN;
-        this.coords = new int[]{4, toBuffer ? 20 : 18};
+        this.coords = new int[]{4, 18};
     }
 
     public int getId() {
         return this.id;
     }
 
-    public int[] getCoords() {
-        return new int[]{this.coords[0], this.coords[1]};
-    }
-
     public Direction getOrientation() {
         return this.orientation;
+    }
+
+    public int getTest() {
+        return this.test;
     }
 
     public boolean isHidden() {
@@ -80,29 +81,33 @@ public abstract class AbstractTetromino {
     }
 
     public Set<Integer> testRotate(int direction) {
-        return this.test >= 4 ? null : this.getRotation(++this.test, this.direction = direction);
+        if (Math.abs(direction + this.test) <= Math.abs(this.test)) {
+            throw new IllegalArgumentException("Subsequent tests must be in the same direction as the initial test.");
+        }
+
+        direction /= Math.abs(direction);
+        return this.test >= 4 ? null : this.getRotation(this.test += direction);
     }
 
     public void rotate() {
-        if (this.direction != 1 && this.direction != -1) {
+        if (this.test == 0) {
             throw new IllegalStateException("Must be called after testing at least 1 rotation.");
         }
 
-        int[] translation = (direction == 1 ? this.getRightKick() : this.getLeftKick())
-                [this.orientation.ordinal()][test];
+        int[] translation = (this.test > 0 ? this.getRightKick() : this.getLeftKick())
+                [this.orientation.ordinal()][Math.abs(this.test) - 1];
         this.coords[0] += translation[0];
         this.coords[1] += translation[1];
 
-        this.orientation = this.orientation.get(this.direction);
+        this.orientation = this.orientation.get(this.test / Math.abs(this.test));
 
-        this.test = -1;
-        this.direction = 0;
+        this.test = 0;
     }
 
-    protected Set<Integer> getRotation(int test, int direction) {
-        Direction no = this.orientation.get(direction);
-        int[] translation = (direction == 1 ? this.getRightKick() : this.getLeftKick())
-                [this.orientation.ordinal()][test];
+    protected Set<Integer> getRotation(int test) {
+        Direction no = this.orientation.get(test / Math.abs(test));
+        int[] translation = (test > 0 ? this.getRightKick() : this.getLeftKick())
+                [this.orientation.ordinal()][Math.abs(test) - 1];
 
         Set<Integer> occupiedCoords = new HashSet<Integer>();
 
@@ -120,6 +125,16 @@ public abstract class AbstractTetromino {
 
     protected abstract int[][][] getRightKick();
 
+//    public AbstractTetromino clone() {
+//        try {
+//            AbstractTetromino clone = (AbstractTetromino) super.clone();
+//            clone.coords = Arrays.copyOf(this.coords, 2);
+//            return clone;
+//        } catch (CloneNotSupportedException e) {
+//            throw new AssertionError(e);
+//        }
+//    }
+
     public boolean occupies(int x, int y) {
         return this.occupies(AbstractTetromino.num(x, y));
     }
@@ -133,13 +148,14 @@ public abstract class AbstractTetromino {
     }
 
     /**
-     * The 8-integer array representation of this Tetromino's default state.
-     * The default state of a Tetromino occupies at most a 2x4 area, therefore
-     * the first 4 integers corresponds to the first row, while the last 4
+     * The 8-integer array representation of this Tetromino's default state. The
+     * default state of a Tetromino occupies at most a 2x4 area, therefore the
+     * first 4 integers corresponds to the first row, while the last 4
      * corresponds to the second row. A Tetromino block is occupying the column
      * if the integer is 1; otherwise, the integer is 0;
      *
-     * @return an array of 8 integers that represents the Tetromino in its default state.
+     * @return an array of 8 integers that represents the Tetromino in its
+     * default state.
      */
     public abstract int[] getStandalone();
 
@@ -164,11 +180,19 @@ public abstract class AbstractTetromino {
         return absoluteCoords;
     }
 
+    public int[] getCoords() {
+        return new int[]{this.coords[0], this.coords[1]};
+    }
+
     public static int[] coords(int num) {
         return new int[]{
                 (num / 100000 == 1 ? -1 : 1) * (num % 100000) / 1000,
                 ((num % 1000) / 100 == 1 ? -1 : 1) * (num % 100)
         };
+    }
+
+    public int numCoords() {
+        return AbstractTetromino.num(this.coords);
     }
 
     public static int num(int... coords) {

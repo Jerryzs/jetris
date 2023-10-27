@@ -2,6 +2,7 @@ package model;
 
 import model.tetromino.AbstractTetromino;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,9 +15,39 @@ public class Playfield {
 
     private boolean readyToLock;
 
-    protected Playfield() {
-        this.matrix = new int[22][10];
+    public Playfield() {
+        this(new int[22][10]);
+    }
+
+    public Playfield(int[][] matrix) {
+        if (matrix == null || matrix.length != 22 || Arrays.stream(matrix).anyMatch((row) -> row.length != 10)) {
+            throw new IllegalArgumentException("Matrix must not-null and rectangular.");
+        }
+
+        this.matrix = matrix;
         this.tetrominoMap = new HashMap<Integer, AbstractTetromino>();
+    }
+
+    protected int get(int x, int y) {
+        if (this.matrix[y][x] != 0) {
+            return this.matrix[y][x];
+        }
+
+        if (this.current != null && this.current.occupies(x, y)) {
+            return this.current.getId();
+        }
+
+        return 0;
+    }
+
+    public int[][] getMatrix() {
+        int[][] matrix = new int[22][10];
+
+        for (int i = 0; i < matrix.length; i++) {
+            System.arraycopy(this.matrix[i], 0, matrix[i], 0, matrix[i].length);
+        }
+
+        return matrix;
     }
 
     protected boolean spawn(AbstractTetromino tetromino) {
@@ -31,7 +62,7 @@ public class Playfield {
         return true;
     }
 
-    protected AbstractTetromino getCurrent() {
+    public AbstractTetromino getCurrent() {
         return this.current;
     }
 
@@ -120,24 +151,8 @@ public class Playfield {
         return this.readyToLock;
     }
 
-    protected int get(int x, int y) {
-        if (this.matrix[y][x] != 0) {
-            return this.matrix[y][x];
-        }
-
-        if (this.current != null && this.current.occupies(x, y)) {
-            return this.current.getId();
-        }
-
-        return 0;
-    }
-
     protected AbstractTetromino getTetromino(int x, int y) {
         return this.tetrominoMap.get(this.get(x, y));
-    }
-
-    protected int[][] getMatrix() {
-        return this.matrix;
     }
 
     private void clear() {

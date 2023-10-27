@@ -2,6 +2,7 @@ package model;
 
 import model.tetromino.AbstractTetromino;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Game implements Runnable {
@@ -13,7 +14,7 @@ public class Game implements Runnable {
     private int framerate;
 
     private AbstractTetromino hold;
-    private boolean holdingAllowed = true;
+    private boolean holdingAllowed;
 
     private final double gravity;
 
@@ -25,15 +26,19 @@ public class Game implements Runnable {
     private boolean over;
 
     public Game(int framerate) {
-        this(framerate, new Playfield(), new RandomBag(), null);
+        this(framerate, new Playfield(), new RandomBag(), null, null, true);
     }
 
-    public Game(int framerate, Playfield playfield, RandomBag bag, AbstractTetromino spawn) {
+    public Game(int framerate, Playfield playfield, RandomBag bag,
+                AbstractTetromino spawn, AbstractTetromino hold, boolean holdingAllowed) {
         this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
 
         this.playfield.spawn(spawn == null ? bag.pop() : spawn);
+
+        this.hold = hold;
+        this.holdingAllowed = holdingAllowed;
 
         this.gravity = 0.01667;
     }
@@ -46,12 +51,20 @@ public class Game implements Runnable {
         return this.framerate;
     }
 
+    public double getGravity() {
+        return this.gravity;
+    }
+
+    public Playfield getPlayfield() {
+        return this.playfield;
+    }
+
     public void toggleGame() {
         this.paused = !this.paused;
     }
 
     public boolean isPaused() {
-        return paused;
+        return this.paused;
     }
 
     public boolean isOver() {
@@ -60,6 +73,10 @@ public class Game implements Runnable {
 
     public AbstractTetromino getHold() {
         return this.hold;
+    }
+
+    public boolean getHoldingAllowed() {
+        return this.holdingAllowed;
     }
 
     public List<AbstractTetromino> getPreview() {
@@ -73,6 +90,10 @@ public class Game implements Runnable {
         }
 
         return preview;
+    }
+
+    public Iterator<AbstractTetromino> getBagIterator() {
+        return this.bag.getIterator();
     }
 
     public int get(int x, int y) {

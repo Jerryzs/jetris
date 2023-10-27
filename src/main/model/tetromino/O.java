@@ -5,6 +5,15 @@ import java.util.Set;
 public class O extends AbstractTetromino {
     private static final int[] STANDALONE = {0, 1, 1, 0, 0, 1, 1, 0};
 
+    public O() {
+        super();
+    }
+
+    public O(int[] coords, Direction orientation, int test) {
+        super(coords, orientation, test);
+    }
+
+
     @Override
     protected int[][][] getLeftKick() {
         return new int[5][4][2];
@@ -21,7 +30,7 @@ public class O extends AbstractTetromino {
     }
 
     @Override
-    protected Set<Integer> getRotation(int test, int direction) {
+    protected Set<Integer> getRotation(int test) {
         return this.findAbsoluteCoords(this.getRelative());
     }
 
