@@ -18,6 +18,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The interface between an underlying Jetris game and a terminal environment.
+ * This class configures a terminal screen and updates it with the box drawings
+ * of menu options or the latest state of the Jetris game. It reads user inputs
+ * from the InputStream and outputs the drawings to the OutputStream provided
+ * for the target terminal environment at a specified number of times per
+ * second. It is designed to essentially handle all interactions with the user
+ * and invoke the appropriate actions from the user's instructions.
+ */
 // suppress warnings on necessary workarounds for ascii auto-test programs
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
 public class CLI extends TimerTask {
