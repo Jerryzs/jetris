@@ -14,6 +14,10 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Queue;
 
+/**
+ * A tool that facilitates the saving and recovering the complete state of a
+ * Jetris game to and from a JSON file.
+ */
 public class Save {
     private static final String DEFAULT_PATH = "./data/save.json";
 
@@ -21,18 +25,45 @@ public class Save {
 
     private Game game;
 
+    /**
+     * EFFECTS: Initialize a Save object with the default path and no game
+     * object. This means that the save() method cannot be called unless the
+     * load() method has been called and a game object has been successfully
+     * loaded first.
+     */
     public Save() {
         this(Save.DEFAULT_PATH);
     }
 
+    /**
+     * EFFECTS: Initialize a Save object using a specified path and no game
+     * object. This means that the save() method cannot be called unless the
+     * load() method has been called and a game object has been successfully
+     * loaded first.
+     *
+     * @param path The path to load from and save to
+     */
     public Save(String path) {
         this(null, path);
     }
 
+    /**
+     * EFFECTS: Initialize a Save object with the default path and a specified
+     * game object.
+     *
+     * @param game The game object to save
+     */
     public Save(Game game) {
         this(game, Save.DEFAULT_PATH);
     }
 
+    /**
+     * EFFECTS: Initialize a Save object with a specified path and a specified
+     * game object.
+     *
+     * @param game The game object to save
+     * @param path The path to load from and save to
+     */
     public Save(Game game, String path) {
         this.file = new File(path);
         this.game = game;
@@ -42,6 +73,12 @@ public class Save {
         return this.game;
     }
 
+    /**
+     * EFFECTS: Write the current game state to the save file.
+     *
+     * @return True if the game state is successfully saved to the file;
+     * otherwise, false
+     */
     public boolean store() {
         if (this.game == null) {
             throw new IllegalStateException("No game has been loaded.");
@@ -65,6 +102,12 @@ public class Save {
         return true;
     }
 
+    /**
+     * EFFECTS: Read the save file and recover the saved game state.
+     *
+     * @return The game object recovered from the save file or null, if the file
+     * does not exist or the save data is incorrect
+     */
     public Game load() {
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file))) {
             StringBuilder json = new StringBuilder();
@@ -85,13 +128,20 @@ public class Save {
                     obj.getBoolean("holdingAllowed")
             );
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
             return null;
         }
 
         return this.game;
     }
 
+    /**
+     * REQUIRES: this.game != null
+     * <p>
+     * EFFECTS: Create a JSON array from the playfield matrix of the current
+     * game.
+     *
+     * @return The JSON array representing the matrix
+     */
     private JSONArray getMatrixJson() {
         JSONArray array = new JSONArray();
 
@@ -106,6 +156,19 @@ public class Save {
         return array;
     }
 
+    /**
+     * REQUIRES: array != null and array.length() == 22 and all array elements
+     * are integers
+     * <p>
+     * EFFECTS: Recover the playfield matrix from the JSON array in the save
+     * file into a 2-dimensional array that can be used to reconstruct a
+     * playfield object.
+     *
+     * @param array The JSON array representing the matrix saved to the file
+     * @return The 2-d integer array representing the playfield matrix
+     * @throws IOException If the JSON array is unreadable or if its content is
+     *                     invalid
+     */
     private static int[][] getMatrix(JSONArray array) throws IOException {
         int[][] matrix = new int[22][10];
 
@@ -125,6 +188,14 @@ public class Save {
         return matrix;
     }
 
+    /**
+     * REQUIRES: this.game != null
+     * <p>
+     * EFFECTS: Create a JSON array from the content of the 7-bag of the current
+     * game.
+     *
+     * @return The JSON array representing the 7-bag
+     */
     private JSONArray getRandomBagJson() {
         JSONArray array = new JSONArray();
 
@@ -136,6 +207,17 @@ public class Save {
         return array;
     }
 
+    /**
+     * REQUIRES: array != null and array.length() > 7
+     * <p>
+     * EFFECTS: Recover the content of the 7-bag from the save file as a queue
+     * that can be used to reconstruct a 7-bag object.
+     *
+     * @param array The JSON array representing the 7-bag saved to the file
+     * @return The queue representing the 7-bag
+     * @throws IOException If the JSON array is unreadable or if its content is
+     *                     invalid
+     */
     private static Queue<AbstractTetromino> getRandomBag(JSONArray array) throws IOException {
         Queue<AbstractTetromino> queue = new ArrayDeque<AbstractTetromino>(14);
 
@@ -143,7 +225,7 @@ public class Save {
             for (int i = 0; i < array.length(); i++) {
                 queue.offer((AbstractTetromino) Class.forName(array.getString(i)).getConstructor().newInstance());
             }
-        } catch (ClassNotFoundException e) {
+        } catch (JSONException | ClassNotFoundException e) {
             throw new IOException();
         } catch (NoSuchMethodException
                  | InstantiationException
@@ -155,6 +237,12 @@ public class Save {
         return queue;
     }
 
+    /**
+     * EFFECTS: Convert the state of a tetromino object into a JSON object.
+     *
+     * @param tetromino The tetromino to convert
+     * @return The JSON object representing the tetromino
+     */
     private static JSONObject getTetrominoJson(AbstractTetromino tetromino) {
         if (tetromino == null) {
             return null;
@@ -167,6 +255,15 @@ public class Save {
                 .put("test", tetromino.getTest());
     }
 
+    /**
+     * EFFECTS: Recover the tetromino object from a JSON object representing the
+     * state of the tetromino.
+     *
+     * @param object The JSON object to parse
+     * @return The tetromino object
+     * @throws IOException If the JSON object is unreadable or if its content is
+     *                     invalid
+     */
     private static AbstractTetromino getTetromino(JSONObject object) throws IOException {
         try {
             return (AbstractTetromino) Class.forName(object.getString("type"))
@@ -175,7 +272,7 @@ public class Save {
                             AbstractTetromino.coords(object.getInt("coords")),
                             AbstractTetromino.Direction.valueOf(object.getString("orientation")),
                             object.getInt("test"));
-        } catch (ClassNotFoundException e) {
+        } catch (JSONException | ClassNotFoundException e) {
             throw new IOException();
         } catch (NoSuchMethodException
                  | InstantiationException
