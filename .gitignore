@@ -2,3 +2,4 @@
 workspace*.xml
 *-javadoc.jar
 *.patch
+data/*.json
