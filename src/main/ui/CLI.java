@@ -87,11 +87,12 @@ public class CLI extends TimerTask {
         this.menu = null;
 
         this.frameCountStartTime = System.currentTimeMillis();
+        this.frameCounter = 0;
     }
 
     private void handleGameLoad() {
         this.save = new Save();
-        this.game = this.save.load();
+        this.game = this.save.load(this.framerate);
 
         if (this.game == null) {
             this.menu.setMessage("Load failed");
@@ -99,6 +100,9 @@ public class CLI extends TimerTask {
         }
 
         this.menu = null;
+
+        this.frameCountStartTime = System.currentTimeMillis();
+        this.frameCounter = 0;
     }
 
     /**

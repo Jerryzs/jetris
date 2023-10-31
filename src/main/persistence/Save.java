@@ -108,7 +108,7 @@ public class Save {
      * @return The game object recovered from the save file or null, if the file
      * does not exist or the save data is incorrect
      */
-    public Game load() {
+    public Game load(int framerate) {
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file))) {
             StringBuilder json = new StringBuilder();
 
@@ -120,7 +120,7 @@ public class Save {
             JSONObject obj = new JSONObject(json.toString());
 
             this.game = new Game(
-                    60,
+                    framerate,
                     new Playfield(Save.getMatrix(obj.getJSONArray("matrix"))),
                     new RandomBag(Save.getRandomBag(obj.getJSONArray("bag"))),
                     obj.has("current") ? Save.getTetromino(obj.getJSONObject("current")) : null,
