@@ -61,6 +61,7 @@ public abstract class AbstractTetromino {
      */
     public void move(Direction direction) {
         AbstractTetromino.move(this.coords, direction);
+        this.test = 0;
     }
 
     public static void move(int[] coords, Direction direction) {
@@ -85,7 +86,7 @@ public abstract class AbstractTetromino {
         }
 
         direction /= Math.abs(direction);
-        return this.test >= 4 ? null : this.getRotation(this.test += direction);
+        return Math.abs(this.test) >= 4 ? null : this.getRotation(this.test += direction);
     }
 
     public void rotate() {
