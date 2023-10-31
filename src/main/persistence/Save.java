@@ -251,8 +251,7 @@ public class Save {
         return new JSONObject()
                 .put("type", tetromino.getClass().getName())
                 .put("coords", tetromino.numCoords())
-                .put("orientation", tetromino.getOrientation().name())
-                .put("test", tetromino.getTest());
+                .put("orientation", tetromino.getOrientation().name());
     }
 
     /**
@@ -267,11 +266,10 @@ public class Save {
     private static AbstractTetromino getTetromino(JSONObject object) throws IOException {
         try {
             return (AbstractTetromino) Class.forName(object.getString("type"))
-                    .getConstructor(int[].class, AbstractTetromino.Direction.class, int.class)
+                    .getConstructor(int[].class, AbstractTetromino.Direction.class)
                     .newInstance(
                             AbstractTetromino.coords(object.getInt("coords")),
-                            AbstractTetromino.Direction.valueOf(object.getString("orientation")),
-                            object.getInt("test"));
+                            AbstractTetromino.Direction.valueOf(object.getString("orientation")));
         } catch (JSONException | ClassNotFoundException e) {
             throw new IOException();
         } catch (NoSuchMethodException

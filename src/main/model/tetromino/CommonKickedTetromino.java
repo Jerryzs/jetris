@@ -19,8 +19,8 @@ public abstract class CommonKickedTetromino extends AbstractTetromino {
         super();
     }
 
-    public CommonKickedTetromino(int[] coords, Direction orientation, int test) {
-        super(coords, orientation, test);
+    public CommonKickedTetromino(int[] coords, Direction orientation) {
+        super(coords, orientation);
     }
 
     @Override

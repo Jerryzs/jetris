@@ -9,8 +9,8 @@ public class O extends AbstractTetromino {
         super();
     }
 
-    public O(int[] coords, Direction orientation, int test) {
-        super(coords, orientation, test);
+    public O(int[] coords, Direction orientation) {
+        super(coords, orientation);
     }
 
 

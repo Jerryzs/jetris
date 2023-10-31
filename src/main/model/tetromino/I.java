@@ -23,8 +23,8 @@ public class I extends AbstractTetromino {
         super();
     }
 
-    public I(int[] coords, Direction orientation, int test) {
-        super(coords, orientation, test);
+    public I(int[] coords, Direction orientation) {
+        super(coords, orientation);
     }
 
     @Override

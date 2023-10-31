@@ -9,8 +9,8 @@ public class L extends CommonKickedTetromino {
         super();
     }
 
-    public L(int[] coords, Direction orientation, int test) {
-        super(coords, orientation, test);
+    public L(int[] coords, Direction orientation) {
+        super(coords, orientation);
     }
 
 

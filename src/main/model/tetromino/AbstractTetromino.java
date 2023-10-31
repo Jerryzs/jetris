@@ -13,14 +13,13 @@ public abstract class AbstractTetromino {
     protected int[] coords;
 
     protected AbstractTetromino() {
-        this(new int[]{4, 20}, Direction.DOWN, 0);
+        this(new int[]{4, 20}, Direction.DOWN);
     }
 
-    protected AbstractTetromino(int[] coords, Direction orientation, int test) {
+    protected AbstractTetromino(int[] coords, Direction orientation) {
         this.id = ++count;
         this.coords = coords;
         this.orientation = orientation;
-        this.test = test;
     }
 
     public void reset() {
