@@ -414,8 +414,7 @@ public class CLI extends TimerTask {
             for (int i = 0; i < text.length; i++) {
                 this.textGraphics.putString(x, i, text[i]);
             }
-
-            this.screen.refresh();
+            
             this.checkInput();
 
             if (this.game != null) {
@@ -424,6 +423,8 @@ public class CLI extends TimerTask {
                 this.game.run();
                 this.countFrame();
             }
+
+            this.screen.refresh();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
