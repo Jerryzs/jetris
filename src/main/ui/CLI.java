@@ -6,17 +6,13 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import model.Game;
 import model.tetromino.AbstractTetromino;
-import persistence.Save;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * The interface between an underlying Jetris game and a terminal environment.
@@ -29,21 +25,12 @@ import java.util.TimerTask;
  */
 // suppress warnings on necessary workarounds for ascii auto-test programs
 @SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
-public class CLI extends TimerTask {
-    private final int framerate;
-    private Game game;
-
+public class CLI extends UserInterface {
     private final TerminalScreen screen;
     private final TextGraphics textGraphics;
 
     private TerminalSize terminalSize;
     private int scale;
-    private Menu menu;
-
-    private int frameCounter;
-    private long frameCountStartTime;
-
-    private Save save;
 
     /**
      * REQUIRES: in != null and out != null and refreshRate > 0
@@ -57,6 +44,8 @@ public class CLI extends TimerTask {
      *                  second
      */
     public CLI(InputStream in, OutputStream out, int framerate) {
+        super(framerate);
+
         try {
             this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
             this.screen.startScreen();
@@ -67,42 +56,30 @@ public class CLI extends TimerTask {
             throw new RuntimeException(e);
         }
 
-        this.framerate = framerate;
-        this.menu = this.mainMenu();
-
-        Timer timer = new Timer();
-        timer.schedule(this, 0, 500 / framerate);
+        this.mainMenu();
+        this.startTimer();
     }
 
-    private Menu mainMenu() {
-        return new Menu("Jetris")
-                .add("Start", this::handleGameStart)
-                .add("Load save", this::handleGameLoad)
+    @Override
+    protected CLMenu getMenu() {
+        return (CLMenu) super.getMenu();
+    }
+
+    @Override
+    protected CLMenu getMainMenu() {
+        return new CLMenu("Jetris")
+                .add("Start", this::start)
+                .add("Load save", this::load)
                 .add("Exit", () -> System.exit(0));
     }
 
-    private void handleGameStart() {
-        this.game = new Game(this.framerate);
-        this.save = new Save(this.game);
-        this.menu = null;
-
-        this.frameCountStartTime = System.currentTimeMillis();
-        this.frameCounter = 0;
-    }
-
-    private void handleGameLoad() {
-        this.save = new Save();
-        this.game = this.save.load(this.framerate);
-
-        if (this.game == null) {
-            this.menu.setMessage("Load failed");
-            return;
-        }
-
-        this.menu = null;
-
-        this.frameCountStartTime = System.currentTimeMillis();
-        this.frameCounter = 0;
+    @Override
+    protected CLMenu getPauseMenu() {
+        return new CLMenu("Paused")
+                .add("Resume", this::resume)
+                .add("Save", this::save)
+                .add("Main menu", this::mainMenu)
+                .add("Exit", () -> System.exit(0));
     }
 
     /**
@@ -124,7 +101,7 @@ public class CLI extends TimerTask {
                 }
             }
 
-            if (this.menu != null) {
+            if (this.getMenu() != null) {
                 this.checkMenuInput(key);
             } else {
                 this.checkGameInput(key);
@@ -134,20 +111,20 @@ public class CLI extends TimerTask {
 
     private void checkMenuInput(KeyStroke key) {
         if (key.getKeyType() == KeyType.Escape) {
-            this.handleResume();
+            this.resume();
         }
 
         if (key.getKeyType() == KeyType.Enter) {
-            this.menu.trigger();
+            this.getMenu().trigger();
         }
 
         if (key.getKeyType() == KeyType.Character) {
             if (key.getCharacter() == 'w') {
-                this.menu.prev();
+                this.getMenu().prev();
             } else if (key.getCharacter() == 's') {
-                this.menu.next();
+                this.getMenu().next();
             } else if (key.getCharacter() == ' ') {
-                this.menu.trigger();
+                this.getMenu().trigger();
             }
         }
     }
@@ -162,7 +139,7 @@ public class CLI extends TimerTask {
      */
     private void checkGameInput(KeyStroke key) {
         if (key.getKeyType() == KeyType.Escape) {
-            this.handlePause();
+            this.pause();
         }
 
         if (key.getKeyType() == KeyType.Character) {
@@ -181,44 +158,21 @@ public class CLI extends TimerTask {
      * @param key The keyboard character.
      */
     private void handleInput(char key) {
-        if (key == 'w') {
+        if (key == ' ') {
             this.game.hold();
+        } else if (key == 'w') {
+            this.game.hardDrop();
         } else if (key == 'a') {
             this.game.moveLeft();
         } else if (key == 's') {
             this.game.softDrop();
         } else if (key == 'd') {
             this.game.moveRight();
-        } else if (key == 'q') {
+        } else if (key == 'q' || key == 'k') {
             this.game.rotateLeft();
-        } else if (key == 'e') {
+        } else if (key == 'e' || key == 'l') {
             this.game.rotateRight();
-        } else if (key == ' ') {
-            this.game.hardDrop();
         }
-    }
-
-    private void handlePause() {
-        this.game.toggleGame();
-        this.menu = new Menu("Paused")
-                .add("Resume", this::handleResume)
-                .add("Save", this::handleSave)
-                .add("Main menu", this::handleReturn)
-                .add("Exit", () -> System.exit(0));
-    }
-
-    private void handleResume() {
-        this.game.toggleGame();
-        this.menu = null;
-    }
-
-    private void handleSave() {
-        this.menu.setMessage(this.save.store() ? "Saved!" : "Failed to save");
-    }
-
-    private void handleReturn() {
-        this.game = null;
-        this.menu = this.mainMenu();
     }
 
     /**
@@ -407,36 +361,25 @@ public class CLI extends TimerTask {
         try {
             this.screen.clear();
 
-            String[] text = this.menu != null
-                    ? this.menu.getRepresentation(this.terminalSize.getRows()) : this.getGameRepresentation();
+            String[] text = this.getMenu() != null
+                    ? this.getMenu().getRepresentation(this.terminalSize.getRows()) : this.getGameRepresentation();
 
             int x = this.getCenterLeftLimit(text[0].length());
             for (int i = 0; i < text.length; i++) {
                 this.textGraphics.putString(x, i, text[i]);
             }
-            
+
             this.checkInput();
 
+            super.run();
+            
             if (this.game != null) {
                 this.textGraphics.putString(0, 0, String.format("FPS: %d", this.game.framerate()));
-
-                this.game.run();
-                this.countFrame();
             }
 
             this.screen.refresh();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void countFrame() {
-        this.frameCounter++;
-
-        if (System.currentTimeMillis() - frameCountStartTime >= 1000) {
-            this.game.framerate(this.frameCounter);
-            this.frameCounter = 0;
-            this.frameCountStartTime = System.currentTimeMillis();
         }
     }
 

@@ -7,6 +7,7 @@ public class Main {
             framerate = Integer.parseInt(args[0]);
         }
 
-        new CLI(System.in, System.out, framerate);
+//        new CLI(System.in, System.out, framerate);
+        new GUI(framerate);
     }
 }
