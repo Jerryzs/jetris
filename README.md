@@ -56,3 +56,10 @@ I want to be able to
 - ~~pause the game~~
 - ~~save the game to a file once the game is paused~~
 - ~~load the game from a file in the starting screen~~
+
+## Instructions for Grader
+
+- Once the application is launched, you may select a start menu item by either clicking on it with your cursor, or navigating to it with the `w` key and the `s` key, then confirming your selection with the `space` key.
+- On the start menu, select 'Start', you will start a new game session and see tetromino pieces being added to the playfield. You may interact with the pieces using the [controls](#gameplay) outlined above.
+- In the game session, use the `escape` key to summon the pause menu. Select 'Save' and the current game state will be stored in the save file.
+- On the pause menu, select 'Main menu' to exit the game and return to the start menu. Select 'Load save' and you will resume the game session that is previously stored in the save file.
