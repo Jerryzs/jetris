@@ -56,14 +56,14 @@ public class GMenu extends JPanel implements Menu, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        char c = Character.toLowerCase(e.getKeyChar());
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
 
         int prev = this.active;
 
-        if (c == 'w' && this.active > 0) {
+        if (key == KeyEvent.VK_W && this.active > 0) {
             this.active--;
-        } else if (c == 's' && this.active < this.buttons.size() - 1) {
+        } else if (key == KeyEvent.VK_S && this.active < this.buttons.size() - 1) {
             this.active++;
         }
 
@@ -74,17 +74,17 @@ public class GMenu extends JPanel implements Menu, KeyListener {
             this.buttons.get(this.active).setBackground(Color.BLACK);
         }
 
-        if (c == ' ') {
+        if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_ENTER) {
             this.buttons.get(this.active).doClick();
         }
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
     }
 
     @Override
