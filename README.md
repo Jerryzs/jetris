@@ -4,6 +4,40 @@ This project is an implementation of a game mechanism popularized by Tetris® si
 
 The Tetris® gameplay (which Jetris implements) has shown beneficial effects to the human brain in a number of research studies. Such benefits range from improved critical thinking and reasoning[[1]](https://doi.org/10.1186%2F1756-0500-2-174), visual pattern recognition[[2]](https://doi.org/10.1126/science.290.5490.350), to the reduction of involuntary flashbacks to traumatic events for people with post-traumatic stress disorder[[3]](https://web.archive.org/web/20201101090805/https://www.nhs.uk/news/mental-health/can-playing-tetris-help-prevent-ptsd/). Thus, this project implements a game mechanism that is not only fun and captivating, but also suitable and beneficial to all kinds of people.
 
+## Controls
+
+### Menu
+
+> `w` - select previous item
+>
+> `s` - select next item
+>
+> `space` / `enter` - confirm selection
+
+### Gameplay
+
+> `a` - move left
+>
+> `d` - move right
+>
+> `w` - hard drop to the bottom and lock
+>
+> `s` - soft drop one cell (or hold to drop continuously)
+>
+> `q` / `k` - rotate counterclockwise
+>
+> `e` / `l` - rotate clockwise
+>
+> `space` - hold
+>
+> `escape` - pause menu
+
+### Command-Line Interface
+
+> `-` - zoom out
+>
+> `+` - zoom in
+
 ## User Stories (Todos)
 
 I want to be able to
