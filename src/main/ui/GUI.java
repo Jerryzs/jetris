@@ -28,26 +28,26 @@ public class GUI extends UserInterface {
     }
 
     @Override
-    protected GMenu getMenu() {
-        return (GMenu) super.getMenu();
+    protected GUMenu getMenu() {
+        return (GUMenu) super.getMenu();
     }
 
     @Override
     protected Menu getMainMenu() {
-        return new GMenu("JETRIS", List.of(
-                new GMenu.Item("Start", e -> this.start()),
-                new GMenu.Item("Load save", e -> this.load()),
-                new GMenu.Item("Exit", e -> System.exit(0))
+        return new GUMenu("JETRIS", List.of(
+                new GUMenu.Item("Start", e -> this.start()),
+                new GUMenu.Item("Load save", e -> this.load()),
+                new GUMenu.Item("Exit", e -> System.exit(0))
         ));
     }
 
     @Override
     protected Menu getPauseMenu() {
-        return new GMenu("PAUSED", List.of(
-                new GMenu.Item("Resume", e -> this.resume()),
-                new GMenu.Item("Save", e -> this.save()),
-                new GMenu.Item("Main menu", e -> this.mainMenu()),
-                new GMenu.Item("Exit", e -> System.exit(0))
+        return new GUMenu("PAUSED", List.of(
+                new GUMenu.Item("Resume", e -> this.resume()),
+                new GUMenu.Item("Save", e -> this.save()),
+                new GUMenu.Item("Main menu", e -> this.mainMenu()),
+                new GUMenu.Item("Exit", e -> System.exit(0))
         ));
     }
 

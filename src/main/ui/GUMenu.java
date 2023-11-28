@@ -10,12 +10,12 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GMenu extends JPanel implements Menu, KeyListener {
+public class GUMenu extends JPanel implements Menu, KeyListener {
     private final List<JButton> buttons;
 
     private int active;
 
-    protected GMenu(String title, List<Item> items) {
+    protected GUMenu(String title, List<Item> items) {
         this.setLayout(new BorderLayout());
 
         this.setBackground(Color.WHITE);
