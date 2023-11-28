@@ -1,10 +1,10 @@
 package ui;
 
 import model.Game;
+import model.tetromino.AbstractTetromino;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
@@ -23,7 +23,7 @@ public class GUI extends UserInterface {
         this.frame.setFocusable(true);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        this.mainMenu(null);
+        this.mainMenu();
         this.startTimer();
     }
 
@@ -35,47 +35,53 @@ public class GUI extends UserInterface {
     @Override
     protected Menu getMainMenu() {
         return new GMenu("JETRIS", List.of(
-                new GMenu.Item("Start", this::start),
-                new GMenu.Item("Load save", this::load),
-                new GMenu.Item("Exit", (e) -> System.exit(0))
+                new GMenu.Item("Start", e -> this.start()),
+                new GMenu.Item("Load save", e -> this.load()),
+                new GMenu.Item("Exit", e -> System.exit(0))
         ));
     }
 
     @Override
     protected Menu getPauseMenu() {
         return new GMenu("PAUSED", List.of(
-                new GMenu.Item("Resume", this::resume),
-                new GMenu.Item("Save", this::save),
-                new GMenu.Item("Main menu", this::mainMenu),
-                new GMenu.Item("Exit", (e) -> System.exit(0))
+                new GMenu.Item("Resume", e -> this.resume()),
+                new GMenu.Item("Save", e -> this.save()),
+                new GMenu.Item("Main menu", e -> this.mainMenu()),
+                new GMenu.Item("Exit", e -> System.exit(0))
         ));
     }
 
-    private void save(ActionEvent e) {
+    @Override
+    protected void save() {
         super.save();
     }
 
-    private void load(ActionEvent e) {
+    @Override
+    protected void load() {
         super.load();
         this.update();
     }
 
-    private void start(ActionEvent e) {
+    @Override
+    protected void start() {
         super.start();
         this.update();
     }
 
-    private void pause(ActionEvent e) {
+    @Override
+    protected void pause() {
         super.pause();
         this.update();
     }
 
-    private void resume(ActionEvent e) {
+    @Override
+    protected void resume() {
         super.resume();
         this.update();
     }
 
-    private void mainMenu(ActionEvent e) {
+    @Override
+    protected void mainMenu() {
         super.mainMenu();
         this.update();
     }
@@ -83,11 +89,15 @@ public class GUI extends UserInterface {
     private void update() {
         this.frame.getContentPane().removeAll();
 
+        for (KeyListener listener : this.frame.getKeyListeners()) {
+            this.frame.removeKeyListener(listener);
+        }
+
         if (this.getMenu() != null) {
             this.frame.add(this.getMenu());
             this.frame.addKeyListener(this.getMenu());
         } else {
-            GUI.GameGraphics graphics = new GUI.GameGraphics(this.game);
+            GUI.GameGraphics graphics = new GUI.GameGraphics(this.game, this);
             this.frame.add(graphics);
             this.frame.addKeyListener(graphics);
         }
@@ -101,11 +111,14 @@ public class GUI extends UserInterface {
         this.frame.repaint();
     }
 
-    private class GameGraphics extends JPanel implements KeyListener {
+    private static class GameGraphics extends JPanel implements KeyListener {
         private final Game game;
 
-        private GameGraphics(Game game) {
+        private final GUI gui;
+
+        private GameGraphics(Game game, GUI gui) {
             this.game = game;
+            this.gui = gui;
             this.setBackground(Color.WHITE);
         }
 
@@ -115,15 +128,31 @@ public class GUI extends UserInterface {
             Graphics2D g2d = (Graphics2D) g;
 
             int blockSize = (this.getHeight() / 20);
-            int leftMargin = (this.getWidth() - 10 * blockSize) / 2;
 
-            g2d.drawLine(leftMargin - blockSize, 0, leftMargin - blockSize, this.getHeight());
-            g2d.drawLine(leftMargin + 11 * blockSize, 0, leftMargin + 11 * blockSize, this.getHeight());
+            int top = 0;
+            int bottom = blockSize * 20;
 
-            this.drawPlayfield(g2d, blockSize, leftMargin);
+            int playfieldLeft = (this.getWidth() - 10 * blockSize) / 2;
+            int playfieldRight = playfieldLeft + 10 * blockSize;
+
+            int holdRight = playfieldLeft - blockSize / 2;
+            int holdLeft = holdRight - blockSize * 5;
+            int holdBottom = blockSize * 5;
+
+            int nextLeft = playfieldRight + blockSize / 2;
+            int nextRight = nextLeft + blockSize * 5;
+            int nextBottom = blockSize * 17;
+
+            this.drawPlayfield(g2d, blockSize, playfieldLeft, playfieldRight, top, bottom);
+            this.drawHold(g2d, blockSize, holdLeft, holdRight, top, holdBottom);
+            this.drawNext(g2d, blockSize, nextLeft, nextRight, top, nextBottom);
         }
 
-        private void drawPlayfield(Graphics2D g, int s, int m) {
+        private void drawPlayfield(Graphics2D g, int s, int pl, int pr, int pt, int pb) {
+            g.drawLine(pl, pt, pl, pb);
+            g.drawLine(pr, pt, pr, pb);
+            g.drawLine(pl, pb, pr, pb);
+
             for (int i = 19; i >= 0; i--) {
                 for (int j = 0; j < 10; j++) {
                     int t = this.game.get(j, i);
@@ -132,45 +161,83 @@ public class GUI extends UserInterface {
                         continue;
                     }
 
-                    g.drawRect(m + j * s, (19 - i) * s, s, s);
+                    g.drawRect(pl + j * s, (19 - i) * s, s, s);
                 }
             }
         }
 
-        @Override
-        public void keyTyped(KeyEvent e) {
+        private void drawHold(Graphics2D g, int s, int hl, int hr, int ht, int hb) {
+            AbstractTetromino t = this.game.getHold();
 
+            this.drawOpenBoxWithHeading("HOLD", g, s, hl, hr, ht, hb);
+
+            if (t == null) {
+                return;
+            }
+
+            this.drawStandaloneTetromino(t, g, s, hl, s);
+        }
+
+        private void drawNext(Graphics2D g, int s, int nl, int nr, int nt, int nb) {
+            List<AbstractTetromino> next = this.game.getPreview();
+
+            this.drawOpenBoxWithHeading("NEXT", g, s, nl, nr, nt, nb);
+
+            for (int i = 0; i < next.size(); i++) {
+                this.drawStandaloneTetromino(next.get(i), g, s, nl, s + i * 3 * s);
+            }
+        }
+
+        private void drawOpenBoxWithHeading(String h, Graphics2D g, int s, int l, int r, int t, int b) {
+            g.drawLine(l, t, l, b);
+            g.drawLine(r, t, r, b);
+            g.drawLine(l, b, r, b);
+
+            g.setFont(new Font(Font.MONOSPACED, Font.BOLD, this.getHeight() / 25));
+            g.drawString(h, l + s * 1.5f, s);
+        }
+
+        private void drawStandaloneTetromino(AbstractTetromino at, Graphics2D g, int s, int l, int t) {
+            int[] standalone = at.getStandalone();
+
+            for (int i = 0; i < standalone.length; i++) {
+                if (standalone[i] == 0) {
+                    continue;
+                }
+
+                g.drawRect(l + s / 2 + i % 4 * s, t + s + i / 4 * s, s, s);
+            }
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_A:
-                    this.game.moveLeft();
-                    break;
-                case KeyEvent.VK_D:
-                    this.game.moveRight();
-                    break;
-                case KeyEvent.VK_S:
-                    this.game.softDrop();
-                    break;
-                case KeyEvent.VK_W:
-                    this.game.hardDrop();
-                    break;
-                case KeyEvent.VK_Q:
-                    this.game.rotateLeft();
-                    break;
-                case KeyEvent.VK_E:
-                    this.game.rotateRight();
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    pause(null);
-                    break;
+            int c = e.getKeyCode();
+
+            if (c == KeyEvent.VK_A) {
+                this.game.moveLeft();
+            } else if (c == KeyEvent.VK_D) {
+                this.game.moveRight();
+            } else if (c == KeyEvent.VK_S) {
+                this.game.softDrop();
+            } else if (c == KeyEvent.VK_W) {
+                this.game.hardDrop();
+            } else if (c == KeyEvent.VK_Q) {
+                this.game.rotateLeft();
+            } else if (c == KeyEvent.VK_E) {
+                this.game.rotateRight();
+            } else if (c == KeyEvent.VK_ESCAPE) {
+                this.gui.pause();
+            } else if (c == KeyEvent.VK_SPACE) {
+                this.game.hold();
             }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
         }
     }
 }
