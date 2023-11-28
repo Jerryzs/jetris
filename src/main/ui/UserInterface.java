@@ -39,6 +39,9 @@ public abstract class UserInterface extends TimerTask {
     }
 
     protected void load() {
+        this.frameCountStartTime = System.currentTimeMillis();
+        this.frameCounter = 0;
+
         this.save = new Save();
         this.game = this.save.load(this.framerate);
 
@@ -48,18 +51,19 @@ public abstract class UserInterface extends TimerTask {
         }
 
         this.menu = null;
-
+        
         this.frameCountStartTime = System.currentTimeMillis();
-        this.frameCounter = 0;
     }
 
     protected void start() {
+        this.frameCountStartTime = System.currentTimeMillis();
+        this.frameCounter = 0;
+
         this.game = new Game(this.framerate);
         this.save = new Save(this.game);
         this.menu = null;
 
         this.frameCountStartTime = System.currentTimeMillis();
-        this.frameCounter = 0;
     }
 
     protected void pause() {
