@@ -3,13 +3,12 @@ package persistence;
 import model.Game;
 import model.Playfield;
 import model.RandomBag;
-import model.tetromino.AbstractTetromino;
+import model.Tetromino;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Queue;
@@ -148,7 +147,7 @@ public class Save {
         for (int[] row : this.game.getPlayfield().getMatrix()) {
             int bin = 0;
             for (int i = 0; i < row.length; i++) {
-                bin += row[i] == 0 ? 0 : 1 << (i * 3);
+                bin += row[i] == 0 ? 0 : row[i] << (i * 3);
             }
             array.put(bin);
         }
@@ -199,9 +198,9 @@ public class Save {
     private JSONArray getRandomBagJson() {
         JSONArray array = new JSONArray();
 
-        Iterator<AbstractTetromino> iterator = this.game.getBagIterator();
+        Iterator<Tetromino> iterator = this.game.getBagIterator();
         while (iterator.hasNext()) {
-            array.put(iterator.next().getClass().getName());
+            array.put(iterator.next().getType().name());
         }
 
         return array;
@@ -218,19 +217,16 @@ public class Save {
      * @throws IOException If the JSON array is unreadable or if its content is
      *                     invalid
      */
-    private static Queue<AbstractTetromino> getRandomBag(JSONArray array) throws IOException {
-        Queue<AbstractTetromino> queue = new ArrayDeque<AbstractTetromino>(14);
+    private static Queue<Tetromino> getRandomBag(JSONArray array) throws IOException {
+        Queue<Tetromino> queue = new ArrayDeque<Tetromino>(14);
 
         try {
             for (int i = 0; i < array.length(); i++) {
-                queue.offer((AbstractTetromino) Class.forName(array.getString(i)).getConstructor().newInstance());
+                queue.offer(new Tetromino(Tetromino.Type.valueOf(array.getString(i))));
             }
-        } catch (JSONException | ClassNotFoundException e) {
+        } catch (JSONException e) {
             throw new IOException();
-        } catch (NoSuchMethodException
-                 | InstantiationException
-                 | IllegalAccessException
-                 | InvocationTargetException e) {
+        } catch (IllegalArgumentException e) {
             throw new AssertionError(e);
         }
 
@@ -243,13 +239,13 @@ public class Save {
      * @param tetromino The tetromino to convert
      * @return The JSON object representing the tetromino
      */
-    private static JSONObject getTetrominoJson(AbstractTetromino tetromino) {
+    private static JSONObject getTetrominoJson(Tetromino tetromino) {
         if (tetromino == null) {
             return null;
         }
 
         return new JSONObject()
-                .put("type", tetromino.getClass().getName())
+                .put("type", tetromino.getType().name())
                 .put("coords", tetromino.numCoords())
                 .put("orientation", tetromino.getOrientation().name());
     }
@@ -263,20 +259,16 @@ public class Save {
      * @throws IOException If the JSON object is unreadable or if its content is
      *                     invalid
      */
-    private static AbstractTetromino getTetromino(JSONObject object) throws IOException {
+    private static Tetromino getTetromino(JSONObject object) throws IOException {
         try {
-            return (AbstractTetromino) Class.forName(object.getString("type"))
-                    .getConstructor(int[].class, AbstractTetromino.Direction.class)
-                    .newInstance(
-                            AbstractTetromino.coords(object.getInt("coords")),
-                            AbstractTetromino.Direction.valueOf(object.getString("orientation")));
-        } catch (JSONException | ClassNotFoundException e) {
+            return new Tetromino(
+                    Tetromino.Type.valueOf(object.getString("type")),
+                    Tetromino.coords(object.getInt("coords")),
+                    Tetromino.Direction.valueOf(object.getString("orientation")));
+        } catch (JSONException e) {
             throw new IOException();
-        } catch (NoSuchMethodException
-                 | InstantiationException
-                 | IllegalAccessException
-                 | InvocationTargetException e) {
-            throw new AssertionError(e);
+        } catch (IllegalArgumentException e) {
+            throw new AssertionError();
         }
     }
 }

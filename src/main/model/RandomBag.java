@@ -1,19 +1,17 @@
 package model;
 
-import model.tetromino.*;
-
 import java.util.*;
 
 public class RandomBag {
-    private final Queue<AbstractTetromino> bag;
+    private final Queue<Tetromino> bag;
 
     public RandomBag() {
-        this.bag = new ArrayDeque<AbstractTetromino>(14);
+        this.bag = new ArrayDeque<Tetromino>(14);
         this.fillBag();
         this.fillBag();
     }
 
-    public RandomBag(Queue<AbstractTetromino> queue) {
+    public RandomBag(Queue<Tetromino> queue) {
         if (queue.size() <= 7) {
             throw new IllegalArgumentException("The queue must have at least 7 tetrominoes.");
         }
@@ -21,8 +19,8 @@ public class RandomBag {
         this.bag = queue;
     }
 
-    public AbstractTetromino pop() {
-        AbstractTetromino t = this.bag.poll();
+    public Tetromino pop() {
+        Tetromino t = this.bag.poll();
 
         if (this.bag.size() <= 7) {
             this.fillBag();
@@ -31,20 +29,22 @@ public class RandomBag {
         return t;
     }
 
-    public List<AbstractTetromino> getPreview() {
-        return new LinkedList<AbstractTetromino>(this.bag).subList(0, 5);
+    public List<Tetromino> getPreview() {
+        return new LinkedList<Tetromino>(this.bag).subList(0, 5);
     }
 
-    public Iterator<AbstractTetromino> getIterator() {
+    public Iterator<Tetromino> getIterator() {
         return this.bag.iterator();
     }
 
     private void fillBag() {
         assert this.bag.size() <= 7;
 
-        ArrayList<AbstractTetromino> b = new ArrayList<AbstractTetromino>(List.of(
-                new I(), new J(), new L(), new O(), new S(), new T(), new Z()
-        ));
+        ArrayList<Tetromino> b = new ArrayList<Tetromino>();
+
+        for (Tetromino.Type t : Tetromino.Type.values()) {
+            b.add(new Tetromino(t));
+        }
 
         Collections.shuffle(b);
         this.bag.addAll(b);

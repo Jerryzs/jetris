@@ -1,7 +1,5 @@
 package model;
 
-import model.tetromino.AbstractTetromino;
-import model.tetromino.T;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +14,7 @@ public class GameTest {
     Game game;
     Playfield playfield;
     RandomBag randomBag;
-    AbstractTetromino tetromino;
+    Tetromino tetromino;
 
     int drawCount;
 
@@ -27,7 +25,7 @@ public class GameTest {
 
         this.playfield = new Playfield();
         this.randomBag = new RandomBag();
-        this.tetromino = new T();
+        this.tetromino = new Tetromino(Tetromino.Type.T);
 
         this.game = new Game(10, this.playfield, this.randomBag, this.tetromino, null, true);
         this.game.toggleGame();
@@ -44,7 +42,7 @@ public class GameTest {
 
     @Test
     void testGetPreview() {
-        List<AbstractTetromino> previewWithCurrent = new LinkedList<AbstractTetromino>();
+        List<Tetromino> previewWithCurrent = new LinkedList<Tetromino>();
 
         previewWithCurrent.add(this.tetromino);
         previewWithCurrent.addAll(this.randomBag.getPreview().subList(0, 4));
@@ -89,7 +87,7 @@ public class GameTest {
 
         assertEquals(this.tetromino, this.playfield.getCurrent());
 
-        AbstractTetromino next = this.randomBag.getPreview().get(0);
+        Tetromino next = this.randomBag.getPreview().get(0);
         this.game.hardDrop();
 
         assertEquals(next, this.playfield.getCurrent());
@@ -166,26 +164,26 @@ public class GameTest {
         }
         this.game.toggleGame();
 
-        assertEquals(this.tetromino.getOrientation(), AbstractTetromino.Direction.DOWN);
+        assertEquals(this.tetromino.getOrientation(), Tetromino.Direction.DOWN);
 
         this.game.rotateLeft();
 
-        assertEquals(this.tetromino.getOrientation(), AbstractTetromino.Direction.RIGHT);
+        assertEquals(this.tetromino.getOrientation(), Tetromino.Direction.RIGHT);
         assertEquals(0, this.game.get(5, 19));
 
         this.game.rotateRight();
 
-        assertEquals(this.tetromino.getOrientation(), AbstractTetromino.Direction.DOWN);
+        assertEquals(this.tetromino.getOrientation(), Tetromino.Direction.DOWN);
         assertEquals(0, this.game.get(4, 18));
 
         this.game.rotateRight();
 
-        assertEquals(this.tetromino.getOrientation(), AbstractTetromino.Direction.LEFT);
+        assertEquals(this.tetromino.getOrientation(), Tetromino.Direction.LEFT);
         assertEquals(0, this.game.get(3, 19));
 
         this.game.rotateLeft();
 
-        assertEquals(this.tetromino.getOrientation(), AbstractTetromino.Direction.DOWN);
+        assertEquals(this.tetromino.getOrientation(), Tetromino.Direction.DOWN);
         assertEquals(0, this.game.get(4, 18));
     }
 
@@ -204,7 +202,7 @@ public class GameTest {
         assertEquals(this.tetromino, this.game.getHold());
         assertEquals(4, this.game.getHold().getCoords()[0]);
         assertEquals(18, this.game.getHold().getCoords()[1]);
-        assertEquals(AbstractTetromino.Direction.DOWN, this.game.getHold().getOrientation());
+        assertEquals(Tetromino.Direction.DOWN, this.game.getHold().getOrientation());
 
         assertFalse(this.game.hold());
 
@@ -216,7 +214,7 @@ public class GameTest {
 
         assertFalse(this.game.hold());
 
-        AbstractTetromino current = this.playfield.getCurrent();
+        Tetromino current = this.playfield.getCurrent();
 
         this.game.toggleGame();
         while (this.playfield.getCurrent() == current || this.playfield.getCurrent().isHidden()) {

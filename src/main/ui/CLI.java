@@ -6,7 +6,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import model.tetromino.AbstractTetromino;
+import model.Tetromino;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -237,10 +237,10 @@ public class CLI extends UserInterface {
      *                  tetromino is 2, this argument can only accept 0 or 1.
      * @param tetromino The tetromino whose default state is to be used
      */
-    private void appendStandaloneTetromino(StringBuilder sb, int line, AbstractTetromino tetromino) {
+    private void appendStandaloneTetromino(StringBuilder sb, int line, Tetromino tetromino) {
         int l = line / this.scale;
         for (int k = 0; k < 4; k++) {
-            this.appendHorizontalBlock(sb, tetromino.getStandalone()[4 * l + k] != 0);
+            this.appendHorizontalBlock(sb, tetromino.getType().getStandalone()[4 * l + k] != 0);
         }
     }
 
@@ -294,7 +294,7 @@ public class CLI extends UserInterface {
                 || line > 16 * this.scale) {
             sb.append(" ".repeat(12 * this.scale));
         } else {
-            List<AbstractTetromino> next = this.game.getPreview();
+            List<Tetromino> next = this.game.getPreview();
 
             int l = line - 2 * this.scale;
 
@@ -372,7 +372,7 @@ public class CLI extends UserInterface {
             this.checkInput();
 
             super.run();
-            
+
             if (this.game != null) {
                 this.textGraphics.putString(0, 0, String.format("FPS: %d", this.game.framerate()));
             }

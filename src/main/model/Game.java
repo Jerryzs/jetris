@@ -1,7 +1,5 @@
 package model;
 
-import model.tetromino.AbstractTetromino;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,7 +14,7 @@ public class Game implements Runnable {
 
     private int framerate;
 
-    private AbstractTetromino hold;
+    private Tetromino hold;
     private boolean holdingAllowed;
 
     private final double gravity;
@@ -53,7 +51,7 @@ public class Game implements Runnable {
      * @param spawn     The first tetromino piece to spawn; or null
      */
     public Game(int framerate, Playfield playfield, RandomBag bag,
-                AbstractTetromino spawn, AbstractTetromino hold, boolean holdingAllowed) {
+                Tetromino spawn, Tetromino hold, boolean holdingAllowed) {
         this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
@@ -127,7 +125,7 @@ public class Game implements Runnable {
      *
      * @return The tetromino object held
      */
-    public AbstractTetromino getHold() {
+    public Tetromino getHold() {
         return this.hold;
     }
 
@@ -142,10 +140,10 @@ public class Game implements Runnable {
      *
      * @return A List of 5 tetrominoes
      */
-    public List<AbstractTetromino> getPreview() {
-        List<AbstractTetromino> preview = this.bag.getPreview();
+    public List<Tetromino> getPreview() {
+        List<Tetromino> preview = this.bag.getPreview();
 
-        AbstractTetromino current = this.playfield.getCurrent();
+        Tetromino current = this.playfield.getCurrent();
         if (current != null && current.isHidden()) {
             preview.add(0, current);
             preview.remove(preview.size() - 1);
@@ -155,7 +153,7 @@ public class Game implements Runnable {
         return preview;
     }
 
-    public Iterator<AbstractTetromino> getBagIterator() {
+    public Iterator<Tetromino> getBagIterator() {
         return this.bag.getIterator();
     }
 
@@ -219,7 +217,7 @@ public class Game implements Runnable {
      */
     public void hardDrop() {
         for (int i = 0; i < 20; i++) {
-            this.playfield.move(AbstractTetromino.Direction.DOWN);
+            this.playfield.move(Tetromino.Direction.DOWN);
         }
         this.lockdown();
     }
@@ -230,7 +228,7 @@ public class Game implements Runnable {
      * EFFECTS: Move the current tetromino to the left by 1 cell, if possible.
      */
     public void moveLeft() {
-        if (this.playfield.move(AbstractTetromino.Direction.LEFT)) {
+        if (this.playfield.move(Tetromino.Direction.LEFT)) {
             this.onMoveSuccessful();
         }
     }
@@ -241,7 +239,7 @@ public class Game implements Runnable {
      * EFFECTS: Move the current tetromino to the right by 1 cell, if possible.
      */
     public void moveRight() {
-        if (this.playfield.move(AbstractTetromino.Direction.RIGHT)) {
+        if (this.playfield.move(Tetromino.Direction.RIGHT)) {
             this.onMoveSuccessful();
         }
     }
@@ -277,7 +275,7 @@ public class Game implements Runnable {
 
         this.holdingAllowed = true;
 
-        this.moveCells = 1 / (21600 * this.gravity * Math.pow(this.framerate, 3));
+        this.moveCells = 1 / (21600 * this.getGravity() * Math.pow(this.framerate, 3));
     }
 
     @Override
@@ -288,7 +286,7 @@ public class Game implements Runnable {
 
         if (moveCells >= 1) {
             this.moveCells--;
-            if (this.playfield.move(AbstractTetromino.Direction.DOWN)) {
+            if (this.playfield.move(Tetromino.Direction.DOWN)) {
                 this.lockFrameCounterResetCounter = 0;
                 this.lockFrameCounter = 0;
             }

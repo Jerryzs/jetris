@@ -1,7 +1,5 @@
 package model;
 
-import model.tetromino.AbstractTetromino;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,9 +7,9 @@ import java.util.Set;
 
 public class Playfield {
     private final int[][] matrix;
-    private final Map<Integer, AbstractTetromino> tetrominoMap;
+    private final Map<Integer, Tetromino> tetrominoMap;
 
-    private AbstractTetromino current;
+    private Tetromino current;
 
     private boolean readyToLock;
 
@@ -25,7 +23,7 @@ public class Playfield {
         }
 
         this.matrix = matrix;
-        this.tetrominoMap = new HashMap<Integer, AbstractTetromino>();
+        this.tetrominoMap = new HashMap<Integer, Tetromino>();
     }
 
     protected int get(int x, int y) {
@@ -34,7 +32,7 @@ public class Playfield {
         }
 
         if (this.current != null && this.current.occupies(x, y)) {
-            return this.current.getId();
+            return this.current.getType().ordinal() + 1;
         }
 
         return 0;
@@ -50,9 +48,9 @@ public class Playfield {
         return matrix;
     }
 
-    protected boolean spawn(AbstractTetromino tetromino) {
+    protected boolean spawn(Tetromino tetromino) {
         for (int c : tetromino.occupies()) {
-            int[] coords = AbstractTetromino.coords(c);
+            int[] coords = Tetromino.coords(c);
             if (this.matrix[coords[1]][coords[0]] != 0) {
                 return false;
             }
@@ -62,13 +60,13 @@ public class Playfield {
         return true;
     }
 
-    public AbstractTetromino getCurrent() {
+    public Tetromino getCurrent() {
         return this.current;
     }
 
-    protected AbstractTetromino swapCurrent(AbstractTetromino tetromino) {
+    protected Tetromino swapCurrent(Tetromino tetromino) {
         this.readyToLock = false;
-        AbstractTetromino c = this.current;
+        Tetromino c = this.current;
 
         if (tetromino == null) {
             throw new IllegalArgumentException();
@@ -78,13 +76,13 @@ public class Playfield {
         return c;
     }
 
-    protected boolean move(AbstractTetromino.Direction direction) {
-        if (this.current == null || (this.current.isHidden() && direction != AbstractTetromino.Direction.DOWN)) {
+    protected boolean move(Tetromino.Direction direction) {
+        if (this.current == null || (this.current.isHidden() && direction != Tetromino.Direction.DOWN)) {
             return false;
         }
 
         for (int c : this.current.testMove(direction)) {
-            int[] coords = AbstractTetromino.coords(c);
+            int[] coords = Tetromino.coords(c);
 
             if (coords[1] < 0) {
                 this.readyToLock = true;
@@ -96,7 +94,7 @@ public class Playfield {
             }
 
             if (this.matrix[coords[1]][coords[0]] != 0) {
-                if (direction == AbstractTetromino.Direction.DOWN) {
+                if (direction == Tetromino.Direction.DOWN) {
                     this.readyToLock = true;
                 }
                 return false;
@@ -118,7 +116,7 @@ public class Playfield {
         OUTER:
         while ((occupiedCoords = this.current.testRotate(direction)) != null) {
             for (int c : occupiedCoords) {
-                int[] oc = AbstractTetromino.coords(c);
+                int[] oc = Tetromino.coords(c);
 
                 if (oc[1] < 0 || oc[0] < 0 || oc[0] > 9 || this.matrix[oc[1]][oc[0]] != 0) {
                     continue OUTER;
@@ -134,8 +132,8 @@ public class Playfield {
 
     protected void lockdown() {
         for (int c : this.current.occupies()) {
-            int[] coords = AbstractTetromino.coords(c);
-            this.matrix[coords[1]][coords[0]] = this.current.getId();
+            int[] coords = Tetromino.coords(c);
+            this.matrix[coords[1]][coords[0]] = this.current.getType().ordinal() + 1;
         }
 
         this.tetrominoMap.put(this.current.getId(), this.current);
@@ -151,7 +149,7 @@ public class Playfield {
         return this.readyToLock;
     }
 
-    protected AbstractTetromino getTetromino(int x, int y) {
+    protected Tetromino getTetromino(int x, int y) {
         return this.tetrominoMap.get(this.get(x, y));
     }
 

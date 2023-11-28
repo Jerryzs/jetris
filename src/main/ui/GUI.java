@@ -1,7 +1,7 @@
 package ui;
 
 import model.Game;
-import model.tetromino.AbstractTetromino;
+import model.Tetromino;
 
 import javax.swing.*;
 import java.awt.*;
@@ -153,6 +153,8 @@ public class GUI extends UserInterface {
             g.drawLine(pr, pt, pr, pb);
             g.drawLine(pl, pb, pr, pb);
 
+            Tetromino.Type[] types = Tetromino.Type.values();
+
             for (int i = 19; i >= 0; i--) {
                 for (int j = 0; j < 10; j++) {
                     int t = this.game.get(j, i);
@@ -161,13 +163,18 @@ public class GUI extends UserInterface {
                         continue;
                     }
 
+                    g.setColor(Color.BLACK);
                     g.drawRect(pl + j * s, (19 - i) * s, s, s);
+                    g.setColor(types[t - 1].getColor());
+                    g.fillRect(pl + j * s, (19 - i) * s, s, s);
                 }
             }
+
+            g.setColor(Color.BLACK);
         }
 
         private void drawHold(Graphics2D g, int s, int hl, int hr, int ht, int hb) {
-            AbstractTetromino t = this.game.getHold();
+            Tetromino t = this.game.getHold();
 
             this.drawOpenBoxWithHeading("HOLD", g, s, hl, hr, ht, hb);
 
@@ -179,7 +186,7 @@ public class GUI extends UserInterface {
         }
 
         private void drawNext(Graphics2D g, int s, int nl, int nr, int nt, int nb) {
-            List<AbstractTetromino> next = this.game.getPreview();
+            List<Tetromino> next = this.game.getPreview();
 
             this.drawOpenBoxWithHeading("NEXT", g, s, nl, nr, nt, nb);
 
@@ -197,16 +204,21 @@ public class GUI extends UserInterface {
             g.drawString(h, l + s * 1.5f, s);
         }
 
-        private void drawStandaloneTetromino(AbstractTetromino at, Graphics2D g, int s, int l, int t) {
-            int[] standalone = at.getStandalone();
+        private void drawStandaloneTetromino(Tetromino at, Graphics2D g, int s, int l, int t) {
+            int[] standalone = at.getType().getStandalone();
 
             for (int i = 0; i < standalone.length; i++) {
                 if (standalone[i] == 0) {
                     continue;
                 }
 
+                g.setColor(Color.BLACK);
                 g.drawRect(l + s / 2 + i % 4 * s, t + s + i / 4 * s, s, s);
+                g.setColor(at.getType().getColor());
+                g.fillRect(l + s / 2 + i % 4 * s, t + s + i / 4 * s, s, s);
             }
+
+            g.setColor(Color.BLACK);
         }
 
         @Override

@@ -1,6 +1,5 @@
 package model;
 
-import model.tetromino.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,16 +21,19 @@ public class RandomBagTest {
     @Test
     void testPop() {
         for (int i = 0; i < 1000; i++) {
-            LinkedList<AbstractTetromino> allPieces = new LinkedList<AbstractTetromino>(
-                    List.of(new I(), new J(), new L(), new O(), new S(), new T(), new Z()));
+            LinkedList<Tetromino> allPieces = new LinkedList<Tetromino>();
+
+            for (Tetromino.Type t : Tetromino.Type.values()) {
+                allPieces.add(new Tetromino(t));
+            }
 
             for (int j = 0; j < 7; j++) {
-                AbstractTetromino tetromino = this.bag.pop();
+                Tetromino tetromino = this.bag.pop();
 
-                ListIterator<AbstractTetromino> iterator = allPieces.listIterator();
+                ListIterator<Tetromino> iterator = allPieces.listIterator();
 
                 while (iterator.hasNext()) {
-                    AbstractTetromino next = iterator.next();
+                    Tetromino next = iterator.next();
                     if (next.getClass().isInstance(tetromino)) {
                         iterator.remove();
                         break;
@@ -45,8 +47,8 @@ public class RandomBagTest {
 
     @Test
     void testGetPreview() {
-        List<AbstractTetromino> actual = this.bag.getPreview();
-        List<AbstractTetromino> expected = new LinkedList<AbstractTetromino>();
+        List<Tetromino> actual = this.bag.getPreview();
+        List<Tetromino> expected = new LinkedList<Tetromino>();
 
         for (int i = 0; i < 5; i++) {
             expected.add(this.bag.pop());
