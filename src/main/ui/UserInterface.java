@@ -51,7 +51,7 @@ public abstract class UserInterface extends TimerTask {
         }
 
         this.menu = null;
-        
+
         this.frameCountStartTime = System.currentTimeMillis();
     }
 
@@ -79,6 +79,10 @@ public abstract class UserInterface extends TimerTask {
     protected void mainMenu() {
         this.game = null;
         this.menu = this.getMainMenu();
+    }
+
+    protected void exit() {
+        System.exit(0);
     }
 
     protected abstract Menu getMainMenu();

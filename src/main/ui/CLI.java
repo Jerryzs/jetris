@@ -70,7 +70,7 @@ public class CLI extends UserInterface {
         return new CLMenu("Jetris")
                 .add("Start", this::start)
                 .add("Load save", this::load)
-                .add("Exit", () -> System.exit(0));
+                .add("Exit", this::exit);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CLI extends UserInterface {
                 .add("Resume", this::resume)
                 .add("Save", this::save)
                 .add("Main menu", this::mainMenu)
-                .add("Exit", () -> System.exit(0));
+                .add("Exit", this::exit);
     }
 
     /**
@@ -90,7 +90,7 @@ public class CLI extends UserInterface {
 
         if (key != null) {
             if (key.getKeyType() == KeyType.EOF) {
-                System.exit(0);
+                this.exit();
             }
 
             if (key.getKeyType() == KeyType.Character) {

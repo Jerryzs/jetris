@@ -21,7 +21,8 @@ public class GUI extends UserInterface {
         this.frame.setSize(1280, 720);
         this.frame.setVisible(true);
         this.frame.setFocusable(true);
-        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        this.frame.addWindowListener(this);
 
         this.mainMenu();
         this.startTimer();
@@ -37,7 +38,7 @@ public class GUI extends UserInterface {
         return new GUMenu("JETRIS", List.of(
                 new GUMenu.Item("Start", this::start),
                 new GUMenu.Item("Load save", this::load),
-                new GUMenu.Item("Exit", () -> System.exit(0))
+                new GUMenu.Item("Exit", this::exit)
         ));
     }
 
@@ -47,7 +48,7 @@ public class GUI extends UserInterface {
                 new GUMenu.Item("Resume", this::resume),
                 new GUMenu.Item("Save", this::save),
                 new GUMenu.Item("Main menu", this::mainMenu),
-                new GUMenu.Item("Exit", () -> System.exit(0))
+                new GUMenu.Item("Exit", this::exit)
         ));
     }
 
@@ -113,6 +114,11 @@ public class GUI extends UserInterface {
 
     public static void main(String[] args) {
         new GUI(60);
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        this.exit();
     }
 
     private static class GameGraphics extends JPanel implements KeyListener {
@@ -255,5 +261,29 @@ public class GUI extends UserInterface {
         @Override
         public void keyTyped(KeyEvent e) {
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
     }
 }
