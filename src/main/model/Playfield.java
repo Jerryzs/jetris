@@ -1,13 +1,10 @@
 package model;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class Playfield {
     private final int[][] matrix;
-    private final Map<Integer, Tetromino> tetrominoMap;
 
     private Tetromino current;
 
@@ -23,7 +20,6 @@ public class Playfield {
         }
 
         this.matrix = matrix;
-        this.tetrominoMap = new HashMap<Integer, Tetromino>();
     }
 
     protected int get(int x, int y) {
@@ -136,8 +132,6 @@ public class Playfield {
             this.matrix[coords[1]][coords[0]] = this.current.getType().ordinal() + 1;
         }
 
-        this.tetrominoMap.put(this.current.getId(), this.current);
-
         this.current = null;
         this.readyToLock = false;
 
@@ -147,10 +141,6 @@ public class Playfield {
 
     protected boolean isReadyToLock() {
         return this.readyToLock;
-    }
-
-    protected Tetromino getTetromino(int x, int y) {
-        return this.tetrominoMap.get(this.get(x, y));
     }
 
     private void clear() {
