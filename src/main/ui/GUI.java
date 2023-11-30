@@ -173,10 +173,13 @@ public class GUI extends UserInterface {
                         continue;
                     }
 
+                    int x = pl + j * s;
+                    int y = (19 - i) * s;
+
                     g.setColor(Color.BLACK);
-                    g.drawRect(pl + j * s, (19 - i) * s, s, s);
+                    g.drawRect(x, y, s, s);
                     g.setColor(types[t - 1].getColor());
-                    g.fillRect(pl + j * s, (19 - i) * s, s, s);
+                    g.fillRect(x, y, s, s);
                 }
             }
 
@@ -222,10 +225,13 @@ public class GUI extends UserInterface {
                     continue;
                 }
 
+                int x = l + s / 2 + i % 4 * s;
+                int y = t + s + i / 4 * s;
+
                 g.setColor(Color.BLACK);
-                g.drawRect(l + s / 2 + i % 4 * s, t + s + i / 4 * s, s, s);
+                g.drawRect(x, y, s, s);
                 g.setColor(at.getType().getColor());
-                g.fillRect(l + s / 2 + i % 4 * s, t + s + i / 4 * s, s, s);
+                g.fillRect(x, y, s, s);
             }
 
             g.setColor(Color.BLACK);
