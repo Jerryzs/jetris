@@ -91,7 +91,7 @@ public class GameTest {
         this.game.hardDrop();
 
         assertEquals(next, this.playfield.getCurrent());
-        assertEquals(this.tetromino.getId(), this.game.get(4, 1));
+        assertEquals(this.tetromino.getType().ordinal() + 1, this.game.get(4, 1));
     }
 
     @Test
@@ -147,13 +147,13 @@ public class GameTest {
         }
         this.game.toggleGame();
 
-        assertEquals(this.tetromino.getId(), this.game.get(4, 19));
+        assertEquals(this.tetromino.getType().ordinal() + 1, this.game.get(4, 19));
 
         this.game.moveLeft();
-        assertEquals(this.tetromino.getId(), this.game.get(3, 20));
+        assertEquals(this.tetromino.getType().ordinal() + 1, this.game.get(3, 20));
 
         this.game.moveRight();
-        assertEquals(this.tetromino.getId(), this.game.get(4, 20));
+        assertEquals(this.tetromino.getType().ordinal() + 1, this.game.get(4, 20));
     }
 
     @Test

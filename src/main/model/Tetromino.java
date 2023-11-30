@@ -6,10 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Tetromino {
-    private static int count;
-
     private final Type type;
-    private final int id;
 
     private Direction orientation;
     private int[] coords;
@@ -22,7 +19,6 @@ public class Tetromino {
 
     public Tetromino(Type type, int[] coords, Direction orientation) {
         this.type = type;
-        this.id = ++count;
         this.coords = coords;
         this.orientation = orientation;
     }
@@ -36,16 +32,8 @@ public class Tetromino {
         this.coords = new int[]{4, 18};
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public Direction getOrientation() {
         return this.orientation;
-    }
-
-    public int getTest() {
-        return this.test;
     }
 
     public boolean isHidden() {
@@ -271,8 +259,6 @@ public class Tetromino {
                         Direction.RIGHT, Set.of(1, 101000, 0, 101101)
                 )
         );
-
-        private static int count;
 
         private final int[][][] leftKickData;
         private final int[][][] rightKickData;
