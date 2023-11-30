@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 
-public class GUI extends UserInterface {
+public class GUI extends UserInterface implements WindowListener {
     private final JFrame frame;
 
     public GUI(int framerate) {
