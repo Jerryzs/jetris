@@ -3,7 +3,6 @@ package ui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.AbstractMap;
@@ -40,11 +39,11 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
             JButton button = new JButton(items.get(i).getKey());
             button.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
 
-            final int j = i;
-            final ActionListener l = items.get(j).getValue();
+            final int active = i;
+            final Runnable action = items.get(active).getValue();
             button.addActionListener(e -> {
-                this.active = j;
-                l.actionPerformed(e);
+                this.active = active;
+                action.run();
             });
 
             button.setBorderPainted(false);
@@ -98,8 +97,8 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
         this.buttons.get(this.active).setText(message);
     }
 
-    protected static class Item extends AbstractMap.SimpleImmutableEntry<String, ActionListener> {
-        public Item(String text, ActionListener action) {
+    protected static class Item extends AbstractMap.SimpleImmutableEntry<String, Runnable> {
+        public Item(String text, Runnable action) {
             super(text, action);
         }
     }
