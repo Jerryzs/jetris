@@ -39,10 +39,16 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
         for (int i = 0; i < items.size(); i++) {
             JButton button = new JButton(items.get(i).getKey());
             button.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
-            button.addActionListener(items.get(i).getValue());
+
+            final int j = i;
+            final ActionListener l = items.get(j).getValue();
+            button.addActionListener(e -> {
+                this.active = j;
+                l.actionPerformed(e);
+            });
+
             button.setBorderPainted(false);
             button.setFocusPainted(false);
-//            button.setContentAreaFilled(false);
             button.setBackground(this.active == i ? Color.black : Color.white);
             button.setForeground(this.active == i ? Color.white : Color.black);
             button.setBorder(new EmptyBorder(1, 2, 1, 2));
