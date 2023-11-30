@@ -383,6 +383,10 @@ public class CLI extends UserInterface {
         }
     }
 
+    public static void main(String[] args) {
+        new CLI(System.in, System.out, 60);
+    }
+
     /**
      * The "HOLD" text at scale 1-5. {@code CLI.HOLD_TEXT[scale - 1]} gives an
      * array of {@code length == scale}, with each element being a line to be

@@ -111,6 +111,10 @@ public class GUI extends UserInterface {
         this.frame.repaint();
     }
 
+    public static void main(String[] args) {
+        new GUI(60);
+    }
+
     private static class GameGraphics extends JPanel implements KeyListener {
         private final Game game;
 
