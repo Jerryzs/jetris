@@ -104,6 +104,10 @@ public class Playfield {
     }
 
     protected boolean rotate(int direction) {
+        if (Math.abs(direction) != 1) {
+            throw new IllegalArgumentException();
+        }
+
         if (this.current == null || this.current.isHidden()) {
             return false;
         }
