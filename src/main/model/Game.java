@@ -3,7 +3,6 @@ package model;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,15 +12,38 @@ import java.util.List;
 public class Game implements Runnable {
     private static final int LOCK_FRAME_COUNTER_RESET_LIMIT = 8;
 
+    /**
+     * An unmodifiable list of gravity values associated with levels of the
+     * game, i.e., <code>Game.GRAVITY.get(level - 1)</code> retrieves the
+     * gravity value of the given <code>level</code>, for <code>1 <= level <=
+     * 15</code>.
+     */
+    private static final List<Double> GRAVITY = List.of(
+            0.01667,
+            0.021017,
+            0.026977,
+            0.035256,
+            0.04693,
+            0.06361,
+            0.0879,
+            0.1236,
+            0.1775,
+            0.2598,
+            0.388,
+            0.59,
+            0.92,
+            1.46,
+            2.36
+    );
+
     private final Playfield playfield;
     private final RandomBag bag;
+    private final Score score;
 
     private int framerate;
 
     private Tetromino hold;
     private boolean holdingAllowed;
-
-    private final double gravity;
 
     private double moveCells;
     private int lockFrameCounter;
@@ -41,6 +63,11 @@ public class Game implements Runnable {
         this(framerate, new Playfield(), new RandomBag(), null, null, true);
     }
 
+    private Game(int framerate, Playfield playfield, RandomBag bag,
+            Tetromino spawn, Tetromino hold, boolean holdingAllowed) {
+        this(framerate, playfield, bag, new Score(playfield), spawn, hold, holdingAllowed);
+    }
+
     /**
      * Create a new game of Jetris with the specified framerate, playfield
      * object, 7-bag object, and tetromino piece to spawn. This constructor is
@@ -54,18 +81,17 @@ public class Game implements Runnable {
      * @param bag       The 7-bag object for the game
      * @param spawn     The first tetromino piece to spawn; or null
      */
-    protected Game(int framerate, Playfield playfield, RandomBag bag,
+    protected Game(int framerate, Playfield playfield, RandomBag bag, Score score,
             Tetromino spawn, Tetromino hold, boolean holdingAllowed) {
         this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
+        this.score = score;
 
         this.playfield.spawn(spawn == null ? bag.pop() : spawn);
 
         this.hold = hold;
         this.holdingAllowed = holdingAllowed;
-
-        this.gravity = 0.01667;
     }
 
     public static Game fromJson(JSONObject json, int framerate) throws IOException {
@@ -74,6 +100,7 @@ public class Game implements Runnable {
                 framerate,
                 playfield,
                 RandomBag.fromJsonArray(json.getJSONArray("bag")),
+                Score.fromJson(json.getJSONObject("score"), playfield),
                 json.has("current") ? Tetromino.fromJson(json.getJSONObject("current")) : null,
                 json.has("hold") ? Tetromino.fromJson(json.getJSONObject("hold")) : null,
                 json.getBoolean("holdingAllowed")
@@ -87,6 +114,7 @@ public class Game implements Runnable {
         obj.put("hold", Tetromino.toJson(game.getHold()));
         obj.put("holdingAllowed", game.getHoldingAllowed());
         obj.put("bag", RandomBag.toJsonArray(game.bag));
+        obj.put("score", Score.toJson(game.score));
         obj.put("matrix", Playfield.toJsonArray(game.playfield));
 
         return obj;
@@ -113,11 +141,15 @@ public class Game implements Runnable {
     }
 
     public double getGravity() {
-        return this.gravity;
+        return Game.GRAVITY.get(this.score.getLevel() - 1);
     }
 
     public Playfield getPlayfield() {
         return this.playfield;
+    }
+
+    public Score getScore() {
+        return this.score;
     }
 
     /**
@@ -235,6 +267,7 @@ public class Game implements Runnable {
      */
     public void softDrop() {
         this.moveCells = 1;
+        this.score.dropBonus(1);
     }
 
     /**
@@ -244,8 +277,8 @@ public class Game implements Runnable {
      * playfield and lock it in place.
      */
     public void hardDrop() {
-        for (int i = 0; i < 20; i++) {
-            this.playfield.move(Tetromino.Direction.DOWN);
+        while (this.playfield.move(Tetromino.Direction.DOWN)) {
+            this.score.dropBonus(2);
         }
         this.lockdown();
     }
@@ -294,16 +327,18 @@ public class Game implements Runnable {
     }
 
     private void lockdown() {
-        this.playfield.lockdown();
+        this.score.tspinCheck();
+        this.score.clear(this.playfield.lockdown());
+
         if (!this.playfield.spawn(this.bag.pop())) {
             this.paused = true;
             this.over = true;
-            return;
+        } else {
+            this.holdingAllowed = true;
+            this.moveCells = 1 / (21600 * this.getGravity() * Math.pow(this.framerate, 3));
         }
 
-        this.holdingAllowed = true;
-
-        this.moveCells = 1 / (21600 * this.getGravity() * Math.pow(this.framerate, 3));
+        this.score.settle();
     }
 
     @Override
@@ -320,7 +355,7 @@ public class Game implements Runnable {
             }
         }
 
-        this.moveCells += this.gravity * 60 / this.framerate;
+        this.moveCells += this.getGravity() * 60 / this.framerate;
 
         if (this.playfield.isReadyToLock()) {
             this.lockFrameCounter++;

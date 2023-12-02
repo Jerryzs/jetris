@@ -1,6 +1,7 @@
 package ui;
 
 import model.Game;
+import model.Score;
 import model.Tetromino;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GUI extends UserInterface implements WindowListener {
@@ -158,6 +160,7 @@ public class GUI extends UserInterface implements WindowListener {
             this.drawPlayfield(g2d, blockSize, playfieldLeft, playfieldRight, top, bottom);
             this.drawHold(g2d, blockSize, holdLeft, holdRight, top, holdBottom);
             this.drawNext(g2d, blockSize, nextLeft, nextRight, top, nextBottom);
+            this.drawScore(this.game.getScore(), g2d, holdLeft, holdBottom + blockSize * 2);
         }
 
         private void drawPlayfield(Graphics2D g, int s, int pl, int pr, int pt, int pb) {
@@ -208,6 +211,50 @@ public class GUI extends UserInterface implements WindowListener {
             for (int i = 0; i < next.size(); i++) {
                 this.drawStandaloneTetromino(next.get(i), g, s, nl, s + i * 3 * s);
             }
+        }
+
+        private void drawScore(Score score, Graphics2D g, int x, int y) {
+            int size = this.getHeight() / 30;
+
+            g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
+            int h = g.getFontMetrics().getHeight();
+
+            int i = 0;
+            for (String line : this.getScoreLines(score)) {
+                g.drawString(line, x, y + h * i);
+                i++;
+            }
+        }
+
+        private LinkedList<String> getScoreLines(Score score) {
+            LinkedList<String> lines = new LinkedList<String>();
+
+            lines.add(String.format("LVL: %d", score.getLevel()));
+            lines.add(String.format("Score: %d", score.getPoints()));
+
+            int[] prev = score.getLastScore();
+
+            if (prev == null) {
+                return lines;
+            }
+
+            if (prev[0] > 0) {
+                lines.add(String.format("+ %d", prev[0]));
+            }
+
+            if (prev[3] > 0) {
+                lines.add(String.format(" %s%n", prev[3] == 1 ? "MINI T-SPIN" : "T-SPIN"));
+            }
+
+            if (prev[1] > 0) {
+                lines.add(String.format("+ %d PERFECT CLEAR%n", prev[1]));
+            }
+
+            if (prev[2] > 0) {
+                lines.add(String.format("+ %d COMBOx%d", prev[2], prev[5]));
+            }
+
+            return lines;
         }
 
         private void drawOpenBoxWithHeading(String h, Graphics2D g, int s, int l, int r, int t, int b) {

@@ -67,8 +67,8 @@ I want to be able to
 - ~~rotate a tetromino~~
 - ~~end the game when the game is over~~
 - see the score when the game is over
-- level up as score increases
-- speed up the game as level increases
+- ~~level up as score increases~~
+- ~~speed up the game as level increases~~
 - ~~pause the game~~
 - ~~save the game to a file once the game is paused~~
 - ~~load the game from a file in the starting screen~~
@@ -81,3 +81,96 @@ I want to be able to
 - On the start menu, select 'Start', you will start a new game session and see tetromino pieces being added to the playfield. You may interact with the pieces using the [controls](#gameplay) outlined above.
 - In the game session, use the `escape` key to summon the pause menu. Select 'Save' and the current game state will be stored in the save file.
 - On the pause menu, select 'Main menu' to exit the game and return to the start menu. Select 'Load save' and you will resume the game session that is previously stored in the save file.
+
+## Logging
+
+```text
+Wed Nov 29 18:34:26 PST 2023
+Game start.
+Wed Nov 29 18:34:26 PST 2023
+Spawn tetromino S.
+Wed Nov 29 18:34:31 PST 2023
+Lock tetromino S
+Wed Nov 29 18:34:31 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:34:31 PST 2023
+Spawn tetromino T.
+Wed Nov 29 18:34:35 PST 2023
+Lock tetromino T
+Wed Nov 29 18:34:35 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:34:35 PST 2023
+Spawn tetromino L.
+Wed Nov 29 18:34:40 PST 2023
+Lock tetromino L
+Wed Nov 29 18:34:40 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:34:40 PST 2023
+Spawn tetromino O.
+Wed Nov 29 18:34:43 PST 2023
+Hold tetromino O and spawn tetromino I.
+Wed Nov 29 18:34:45 PST 2023
+Rotate tetromino I left.
+Wed Nov 29 18:34:48 PST 2023
+Lock tetromino I
+Wed Nov 29 18:34:48 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:34:48 PST 2023
+Spawn tetromino J.
+Wed Nov 29 18:34:53 PST 2023
+Lock tetromino J
+Wed Nov 29 18:34:53 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:34:53 PST 2023
+Spawn tetromino Z.
+Wed Nov 29 18:34:54 PST 2023
+Hold tetromino Z and spawn tetromino O.
+Wed Nov 29 18:34:57 PST 2023
+Lock tetromino O
+Wed Nov 29 18:34:57 PST 2023
+Clear 2 lines.
+Wed Nov 29 18:34:57 PST 2023
+Spawn tetromino Z.
+Wed Nov 29 18:35:01 PST 2023
+Game pause.
+Wed Nov 29 18:35:09 PST 2023
+Game resume.
+Wed Nov 29 18:35:12 PST 2023
+Lock tetromino Z
+Wed Nov 29 18:35:12 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:35:12 PST 2023
+Spawn tetromino S.
+Wed Nov 29 18:35:19 PST 2023
+Rotate tetromino S left.
+Wed Nov 29 18:35:21 PST 2023
+Rotate tetromino S right.
+Wed Nov 29 18:35:24 PST 2023
+Hold tetromino S and spawn tetromino Z.
+Wed Nov 29 18:35:27 PST 2023
+Lock tetromino Z
+Wed Nov 29 18:35:27 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:35:27 PST 2023
+Spawn tetromino I.
+Wed Nov 29 18:35:31 PST 2023
+Hold tetromino I and spawn tetromino S.
+Wed Nov 29 18:35:32 PST 2023
+Rotate tetromino S left.
+Wed Nov 29 18:35:37 PST 2023
+Lock tetromino S
+Wed Nov 29 18:35:37 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:35:37 PST 2023
+Spawn tetromino O.
+Wed Nov 29 18:35:43 PST 2023
+Lock tetromino O
+Wed Nov 29 18:35:43 PST 2023
+Clear 0 lines.
+Wed Nov 29 18:35:43 PST 2023
+Spawn tetromino J.
+Wed Nov 29 18:35:45 PST 2023
+Lock tetromino J
+Wed Nov 29 18:35:45 PST 2023
+Clear 1 lines.
+```

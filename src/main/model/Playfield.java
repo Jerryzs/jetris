@@ -102,6 +102,16 @@ public class Playfield {
         return matrix;
     }
 
+    public boolean isEmpty() {
+        for (int i = 0; i < this.matrix[0].length; i++) {
+            if (this.matrix[0][i] != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected boolean spawn(Tetromino tetromino) {
         for (int c : tetromino.occupies()) {
             int[] coords = Tetromino.coords(c);
@@ -188,7 +198,7 @@ public class Playfield {
         return false;
     }
 
-    protected void lockdown() {
+    protected int lockdown() {
         for (int c : this.current.occupies()) {
             int[] coords = Tetromino.coords(c);
             this.matrix[coords[1]][coords[0]] = this.current.getType().ordinal() + 1;
@@ -197,15 +207,15 @@ public class Playfield {
         this.current = null;
         this.readyToLock = false;
 
-        this.clear();
-
+        return this.clear();
     }
 
     protected boolean isReadyToLock() {
         return this.readyToLock;
     }
 
-    private void clear() {
+    private int clear() {
+        int count = 0;
         OUTER:
         for (int i = 0; i < this.matrix.length; i++) {
             for (int j = 0; j < this.matrix[i].length; j++) {
@@ -219,8 +229,10 @@ public class Playfield {
             }
 
             this.matrix[this.matrix.length - 2 - 1] = new int[10];
-
+            count++;
             i--;
         }
+
+        return count;
     }
 }

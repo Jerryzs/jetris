@@ -14,6 +14,7 @@ public class GameTest {
     Game game;
     Playfield playfield;
     RandomBag randomBag;
+    Score score;
     Tetromino tetromino;
 
     int drawCount;
@@ -25,9 +26,10 @@ public class GameTest {
 
         this.playfield = new Playfield();
         this.randomBag = new RandomBag();
+        this.score = new Score(this.playfield);
         this.tetromino = new Tetromino(Tetromino.Type.T);
 
-        this.game = new Game(10, this.playfield, this.randomBag, this.tetromino, null, true);
+        this.game = new Game(10, this.playfield, this.randomBag, this.score, this.tetromino, null, true);
         this.game.toggleGame();
     }
 

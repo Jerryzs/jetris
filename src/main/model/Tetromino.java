@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,9 @@ public class Tetromino {
 
     private Direction orientation;
     private int[] coords;
+
+    private Direction lastOrientation;
+    private int[] lastCoords;
 
     private int test;
 
@@ -79,6 +83,14 @@ public class Tetromino {
         return this.orientation;
     }
 
+    public int[] getLastCoords() {
+        return this.lastCoords;
+    }
+
+    public Direction getLastOrientation() {
+        return this.lastOrientation;
+    }
+
     public boolean isHidden() {
         return this.coords[1] == 20;
     }
@@ -100,6 +112,9 @@ public class Tetromino {
      * REQUIRES: there must be space for the Tetromino to move to
      */
     public void move(Direction direction) {
+        this.lastCoords = Arrays.copyOf(this.coords, 2);
+        this.lastOrientation = this.orientation;
+
         Tetromino.move(this.coords, direction);
         this.test = 0;
     }
@@ -134,11 +149,14 @@ public class Tetromino {
             throw new IllegalStateException("Must be called after testing at least 1 rotation.");
         }
 
+        this.lastCoords = Arrays.copyOf(this.coords, 2);
+
         int[] translation = (this.test > 0 ? this.type.getRightKickData() : this.type.getLeftKickData())
                 [this.orientation.ordinal()][Math.abs(this.test) - 1];
         this.coords[0] += translation[0];
         this.coords[1] += translation[1];
 
+        this.lastOrientation = this.orientation;
         this.orientation = this.orientation.get(this.test / Math.abs(this.test));
 
         this.test = 0;
