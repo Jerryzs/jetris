@@ -1,5 +1,9 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -14,12 +18,66 @@ public class Playfield {
         this(new int[22][10]);
     }
 
-    public Playfield(int[][] matrix) {
+    private Playfield(int[][] matrix) {
         if (matrix == null || matrix.length != 22 || Arrays.stream(matrix).anyMatch((row) -> row.length != 10)) {
             throw new IllegalArgumentException("Matrix must not-null and rectangular.");
         }
 
         this.matrix = matrix;
+    }
+
+    /**
+     * REQUIRES: this.game != null
+     * <p>
+     * EFFECTS: Create a JSON array from the playfield matrix of the current
+     * game.
+     *
+     * @return The JSON array representing the matrix
+     */
+    public static JSONArray toJsonArray(Playfield playfield) {
+        JSONArray array = new JSONArray();
+
+        for (int[] row : playfield.getMatrix()) {
+            int bin = 0;
+            for (int i = 0; i < row.length; i++) {
+                bin += row[i] == 0 ? 0 : row[i] << (i * 3);
+            }
+            array.put(bin);
+        }
+
+        return array;
+    }
+
+    /**
+     * REQUIRES: array != null and array.length() == 22 and all array elements
+     * are integers
+     * <p>
+     * EFFECTS: Recover the playfield matrix from the JSON array in the save
+     * file into a 2-dimensional array that can be used to reconstruct a
+     * playfield object.
+     *
+     * @param array The JSON array representing the matrix saved to the file
+     * @return The 2-d integer array representing the playfield matrix
+     * @throws IOException If the JSON array is unreadable or if its content is
+     *                     invalid
+     */
+    public static Playfield fromJsonArray(JSONArray array) throws IOException {
+        int[][] matrix = new int[22][10];
+
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                int row = array.getInt(i);
+
+                for (int j = 0; j < matrix[i].length; j++) {
+                    matrix[i][j] = row % 8;
+                    row /= 8;
+                }
+            }
+        } catch (JSONException | ArrayIndexOutOfBoundsException e) {
+            throw new IOException();
+        }
+
+        return new Playfield(matrix);
     }
 
     protected int get(int x, int y) {

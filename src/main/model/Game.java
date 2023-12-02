@@ -1,5 +1,9 @@
 package model;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,8 +54,8 @@ public class Game implements Runnable {
      * @param bag       The 7-bag object for the game
      * @param spawn     The first tetromino piece to spawn; or null
      */
-    public Game(int framerate, Playfield playfield, RandomBag bag,
-                Tetromino spawn, Tetromino hold, boolean holdingAllowed) {
+    protected Game(int framerate, Playfield playfield, RandomBag bag,
+            Tetromino spawn, Tetromino hold, boolean holdingAllowed) {
         this.framerate = framerate;
         this.playfield = playfield;
         this.bag = bag;
@@ -62,6 +66,30 @@ public class Game implements Runnable {
         this.holdingAllowed = holdingAllowed;
 
         this.gravity = 0.01667;
+    }
+
+    public static Game fromJson(JSONObject json, int framerate) throws IOException {
+        Playfield playfield = Playfield.fromJsonArray(json.getJSONArray("matrix"));
+        return new Game(
+                framerate,
+                playfield,
+                RandomBag.fromJsonArray(json.getJSONArray("bag")),
+                json.has("current") ? Tetromino.fromJson(json.getJSONObject("current")) : null,
+                json.has("hold") ? Tetromino.fromJson(json.getJSONObject("hold")) : null,
+                json.getBoolean("holdingAllowed")
+        );
+    }
+
+    public static JSONObject toJson(Game game) {
+        JSONObject obj = new JSONObject();
+
+        obj.put("current", Tetromino.toJson(game.getPlayfield().getCurrent()));
+        obj.put("hold", Tetromino.toJson(game.getHold()));
+        obj.put("holdingAllowed", game.getHoldingAllowed());
+        obj.put("bag", RandomBag.toJsonArray(game.bag));
+        obj.put("matrix", Playfield.toJsonArray(game.playfield));
+
+        return obj;
     }
 
     /**

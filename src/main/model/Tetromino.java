@@ -1,6 +1,10 @@
 package model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -17,10 +21,49 @@ public class Tetromino {
         this(type, new int[]{4, 20}, Direction.DOWN);
     }
 
-    public Tetromino(Type type, int[] coords, Direction orientation) {
+    private Tetromino(Type type, int[] coords, Direction orientation) {
         this.type = type;
         this.coords = coords;
         this.orientation = orientation;
+    }
+
+    /**
+     * EFFECTS: Convert the state of a tetromino object into a JSON object.
+     *
+     * @param tetromino The tetromino to convert
+     * @return The JSON object representing the tetromino
+     */
+    public static JSONObject toJson(Tetromino tetromino) {
+        if (tetromino == null) {
+            return null;
+        }
+
+        return new JSONObject()
+                .put("type", tetromino.getType().name())
+                .put("coords", tetromino.numCoords())
+                .put("orientation", tetromino.getOrientation().name());
+    }
+
+    /**
+     * EFFECTS: Recover the tetromino object from a JSON object representing the
+     * state of the tetromino.
+     *
+     * @param object The JSON object to parse
+     * @return The tetromino object
+     * @throws IOException If the JSON object is unreadable or if its content is
+     *                     invalid
+     */
+    public static Tetromino fromJson(JSONObject object) throws IOException {
+        try {
+            return new Tetromino(
+                    Tetromino.Type.valueOf(object.getString("type")),
+                    Tetromino.coords(object.getInt("coords")),
+                    Tetromino.Direction.valueOf(object.getString("orientation")));
+        } catch (JSONException e) {
+            throw new IOException();
+        } catch (IllegalArgumentException e) {
+            throw new AssertionError();
+        }
     }
 
     public Type getType() {
