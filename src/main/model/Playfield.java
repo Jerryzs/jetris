@@ -191,6 +191,8 @@ public class Playfield {
                 }
             }
 
+            this.readyToLock = false;
+
             this.current.rotate();
             return true;
         }
