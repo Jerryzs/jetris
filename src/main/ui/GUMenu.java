@@ -98,7 +98,7 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
     }
 
     protected static class Item extends AbstractMap.SimpleImmutableEntry<String, Runnable> {
-        public Item(String text, Runnable action) {
+        protected Item(String text, Runnable action) {
             super(text, action);
         }
     }

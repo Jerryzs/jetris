@@ -96,13 +96,14 @@ public class Game implements Runnable {
 
     public static Game fromJson(JSONObject json, int framerate) throws IOException {
         Playfield playfield = Playfield.fromJsonArray(json.getJSONArray("matrix"));
+
         return new Game(
                 framerate,
                 playfield,
                 RandomBag.fromJsonArray(json.getJSONArray("bag")),
                 Score.fromJson(json.getJSONObject("score"), playfield),
                 json.has("current") ? Tetromino.fromJson(json.getJSONObject("current")) : null,
-                json.has("hold") ? Tetromino.fromJson(json.getJSONObject("hold")) : null,
+                json.has("hold") ? new Tetromino(Tetromino.Type.valueOf(json.getString("hold")), true) : null,
                 json.getBoolean("holdingAllowed")
         );
     }
@@ -111,7 +112,7 @@ public class Game implements Runnable {
         JSONObject obj = new JSONObject();
 
         obj.put("current", Tetromino.toJson(game.getPlayfield().getCurrent()));
-        obj.put("hold", Tetromino.toJson(game.getHold()));
+        obj.put("hold", game.getHold().getType().name());
         obj.put("holdingAllowed", game.getHoldingAllowed());
         obj.put("bag", RandomBag.toJsonArray(game.bag));
         obj.put("score", Score.toJson(game.score));
@@ -255,7 +256,7 @@ public class Game implements Runnable {
         this.hold = this.playfield.swapCurrent(this.hold == null ? this.bag.pop() : this.hold);
         this.hold.reset();
         this.holdingAllowed = false;
-        
+
         this.score.resetDropBonus();
 
         return true;

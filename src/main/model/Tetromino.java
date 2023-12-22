@@ -22,13 +22,19 @@ public class Tetromino {
     private int test;
 
     public Tetromino(Type type) {
-        this(type, new int[]{4, 20}, Direction.DOWN);
+        this(type, false);
     }
 
-    private Tetromino(Type type, int[] coords, Direction orientation) {
+    protected Tetromino(Type type, boolean held) {
+        this(type, new int[]{4, held ? 18 : 20}, Direction.DOWN, new int[2], Direction.DOWN);
+    }
+
+    private Tetromino(Type type, int[] coords, Direction orientation, int[] lastCoords, Direction lastOrientation) {
         this.type = type;
         this.coords = coords;
         this.orientation = orientation;
+        this.lastCoords = lastCoords;
+        this.lastOrientation = lastOrientation;
     }
 
     /**
@@ -43,9 +49,11 @@ public class Tetromino {
         }
 
         return new JSONObject()
-                .put("type", tetromino.getType().name())
+                .put("type", tetromino.type.name())
                 .put("coords", tetromino.numCoords())
-                .put("orientation", tetromino.getOrientation().name());
+                .put("orientation", tetromino.orientation.name())
+                .put("lastCoords", Tetromino.num(tetromino.lastCoords))
+                .put("lastOrientation", tetromino.lastOrientation);
     }
 
     /**
@@ -62,7 +70,9 @@ public class Tetromino {
             return new Tetromino(
                     Tetromino.Type.valueOf(object.getString("type")),
                     Tetromino.coords(object.getInt("coords")),
-                    Tetromino.Direction.valueOf(object.getString("orientation")));
+                    Tetromino.Direction.valueOf(object.getString("orientation")),
+                    Tetromino.coords(object.getInt("lastCoords")),
+                    Tetromino.Direction.valueOf(object.getString("lastOrientation")));
         } catch (JSONException e) {
             throw new IOException();
         } catch (IllegalArgumentException e) {
