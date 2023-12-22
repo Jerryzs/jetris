@@ -15,16 +15,30 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
     private int active;
 
     protected GUMenu(String title, List<Item> items) {
-        this.setLayout(new BorderLayout());
+        this(title, "", items);
+    }
 
+    protected GUMenu(String title, String subtitle, List<Item> items) {
         this.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel(title);
-        label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 128));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(new EmptyBorder(50, 0, 50, 0));
+        JPanel titleGroup = new JPanel();
+        titleGroup.setLayout(new BoxLayout(titleGroup, BoxLayout.PAGE_AXIS));
+        titleGroup.setBackground(Color.WHITE);
 
-        this.add(label, BorderLayout.PAGE_START);
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 96));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titleLabel.setBorder(new EmptyBorder(75, 0, 0, 0));
+
+        JLabel subtitleLabel = new JLabel(subtitle);
+        subtitleLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        subtitleLabel.setBorder(new EmptyBorder(0, 0, 50, 0));
+
+        titleGroup.add(titleLabel);
+        titleGroup.add(subtitleLabel);
+
+        this.add(titleGroup, BorderLayout.PAGE_START);
 
         this.buttons = new ArrayList<JButton>();
         this.add(this.buttons(items), BorderLayout.CENTER);

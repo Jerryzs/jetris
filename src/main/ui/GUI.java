@@ -57,6 +57,17 @@ public class GUI extends UserInterface implements WindowListener {
     }
 
     @Override
+    protected Menu getGameOverMenu() {
+        return new GUMenu("GAME OVER",
+                "Score: " + this.game.getScore().getPoints(),
+                List.of(
+                        new GUMenu.Item("Retry", this::start),
+                        new GUMenu.Item("Main menu", this::mainMenu),
+                        new GUMenu.Item("Exit", this::exit)
+                ));
+    }
+
+    @Override
     protected void save() {
         super.save();
     }
@@ -64,6 +75,12 @@ public class GUI extends UserInterface implements WindowListener {
     @Override
     protected void load() {
         super.load();
+        this.update();
+    }
+
+    @Override
+    protected void over() {
+        super.over();
         this.update();
     }
 

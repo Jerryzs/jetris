@@ -67,6 +67,11 @@ public abstract class UserInterface extends TimerTask {
         this.menu = this.getPauseMenu();
     }
 
+    protected void over() {
+        this.menu = this.getGameOverMenu();
+        this.game = null;
+    }
+
     protected void resume() {
         this.game.toggleGame();
         this.menu = null;
@@ -85,12 +90,21 @@ public abstract class UserInterface extends TimerTask {
 
     protected abstract Menu getPauseMenu();
 
+    protected abstract Menu getGameOverMenu();
+
     @Override
     public void run() {
-        if (this.game != null) {
-            this.game.run();
-            this.countFrame();
+        if (this.game == null) {
+            return;
         }
+
+        this.game.run();
+
+        if (this.game.isOver()) {
+            this.over();
+        }
+
+        this.countFrame();
     }
 
     private void countFrame() {

@@ -82,6 +82,14 @@ public class CLI extends UserInterface {
                 .add("Exit", this::exit);
     }
 
+    @Override
+    protected CLMenu getGameOverMenu() {
+        return new CLMenu("Game Over")
+                .add("Retry", this::start)
+                .add("Main menu", this::mainMenu)
+                .add("Exit", this::exit);
+    }
+
     /**
      * @throws IOException Error propagated from the underlying stream.
      */
