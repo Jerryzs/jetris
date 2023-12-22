@@ -30,10 +30,6 @@ public abstract class UserInterface extends TimerTask {
         return this.menu;
     }
 
-    protected void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     protected void save() {
         this.menu.setMessage(this.save.store() ? "Saved!" : "Failed to save");
     }
