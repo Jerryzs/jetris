@@ -2,6 +2,20 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/model/Game.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/model/Playfield.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/model/RandomBag.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/model/Score.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/model/Tetromino.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/persistence/Save.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/CLI.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/CLMenu.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/GUI.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/GUMenu.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/Menu.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jerryzs/jetris/ui/UserInterface.java" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="US-ASCII" />
     <file url="PROJECT" charset="US-ASCII" />
   </component>
 </project>

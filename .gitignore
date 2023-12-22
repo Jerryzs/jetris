@@ -1,5 +1,5 @@
 *.class
 workspace*.xml
-*-javadoc.jar
-data/*.json
+save.json
 .idea/shelf/*
+target

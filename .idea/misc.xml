@@ -6,6 +6,14 @@
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectResources">
     <resource url="http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd" location="$PROJECT_DIR$/checkstyle.xml" />
   </component>
