@@ -102,13 +102,13 @@ public class Score {
         }
 
         if (Math.abs(t.getLastCoords()[0] - t.getCoords()[0]) == 1
-                && Math.abs(t.getLastCoords()[1] - t.getCoords()[1]) == 1) {
-            this.tspin = 2;
+                && Math.abs(t.getLastCoords()[1] - t.getCoords()[1]) == 2) {
+            this.buffer[3] = this.tspin = 2;
             return;
         }
 
         boolean[] corners = getCorners(t, t.getOrientation());
-        this.tspin = corners[2] && corners[3] && (corners[0] || corners[1]) ? 2
+        this.buffer[3] = this.tspin = corners[2] && corners[3] && (corners[0] || corners[1]) ? 2
                 : (corners[2] || corners[3]) && corners[0] && corners[1] ? 1
                 : 0;
     }
@@ -160,7 +160,6 @@ public class Score {
                 : lineCount == 2 ? (this.tspin == 0 ? 300 : this.tspin == 1 ? 400 : 1200)
                 : lineCount == 3 ? (this.tspin == 0 ? 500 : 1600) : 800);
 
-        this.buffer[3] = this.tspin;
         this.tspin = 0;
 
         if (this.playfield.isEmpty()) {
