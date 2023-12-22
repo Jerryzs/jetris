@@ -255,6 +255,8 @@ public class Game implements Runnable {
         this.hold = this.playfield.swapCurrent(this.hold == null ? this.bag.pop() : this.hold);
         this.hold.reset();
         this.holdingAllowed = false;
+        
+        this.score.resetDropBonus();
 
         return true;
     }

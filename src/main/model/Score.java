@@ -94,6 +94,10 @@ public class Score {
         this.dropBonus += points;
     }
 
+    protected void resetDropBonus() {
+        this.dropBonus = 0;
+    }
+
     protected void tspinCheck() {
         Tetromino t = this.playfield.getCurrent();
 
