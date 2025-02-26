@@ -151,7 +151,13 @@ public class Tetromino {
         }
 
         direction /= Math.abs(direction);
-        return Math.abs(this.test) >= 4 ? null : this.getRotation(this.test += direction);
+
+        if (Math.abs(this.test) >= 4) {
+            this.test = 0;
+            return null;
+        } else {
+            return this.getRotation(this.test += direction);
+        }
     }
 
     public void rotate() {
