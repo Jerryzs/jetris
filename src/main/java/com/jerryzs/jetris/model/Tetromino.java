@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Tetromino {
+public class Tetromino implements Cloneable {
     private final Type type;
 
     private Direction orientation;
@@ -35,6 +35,22 @@ public class Tetromino {
         this.orientation = orientation;
         this.lastCoords = lastCoords;
         this.lastOrientation = lastOrientation;
+    }
+
+    @Override
+    public Tetromino clone() {
+        final Tetromino clone;
+
+        try {
+            clone = (Tetromino) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+
+        clone.coords = this.coords.clone();
+        clone.lastCoords = this.lastCoords.clone();
+
+        return clone;
     }
 
     /**
@@ -94,7 +110,7 @@ public class Tetromino {
     }
 
     public int[] getLastCoords() {
-        return this.lastCoords;
+        return this.lastCoords.clone();
     }
 
     public Direction getLastOrientation() {
@@ -227,7 +243,7 @@ public class Tetromino {
     }
 
     public int[] getCoords() {
-        return new int[]{this.coords[0], this.coords[1]};
+        return this.coords.clone();
     }
 
     public int numCoords() {
