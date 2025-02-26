@@ -32,7 +32,7 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
         titleLabel.setBorder(new EmptyBorder(75, 0, 0, 0));
 
         JLabel subtitleLabel = new JLabel(subtitle);
-        subtitleLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
+        subtitleLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 30));
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitleLabel.setBorder(new EmptyBorder(0, 0, 50, 0));
 
