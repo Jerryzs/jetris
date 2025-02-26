@@ -3,6 +3,7 @@ package com.jerryzs.jetris.ui;
 import com.jerryzs.jetris.model.Game;
 import com.jerryzs.jetris.model.Score;
 import com.jerryzs.jetris.model.Tetromino;
+import com.jerryzs.jetris.persistence.HighScore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,11 +40,13 @@ public class GUI extends UserInterface implements WindowListener {
 
     @Override
     protected Menu getMainMenu() {
-        return new GUMenu("JETRIS", List.of(
-                new GUMenu.Item("Start", this::start),
-                new GUMenu.Item("Load save", this::load),
-                new GUMenu.Item("Exit", this::exit)
-        ));
+        return new GUMenu("JETRIS",
+                "High score: " + HighScore.instance().get(),
+                List.of(
+                    new GUMenu.Item("Start", this::start),
+                    new GUMenu.Item("Load save", this::load),
+                    new GUMenu.Item("Exit", this::exit)
+                ));
     }
 
     @Override
