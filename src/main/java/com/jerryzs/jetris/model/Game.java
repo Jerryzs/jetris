@@ -214,10 +214,6 @@ public class Game implements Runnable {
         return preview;
     }
 
-    public Iterator<Tetromino> getBagIterator() {
-        return this.bag.getIterator();
-    }
-
     /**
      * REQUIRES: 0 <= x <= 9 and 0 <= y <= 21
      * <p>
