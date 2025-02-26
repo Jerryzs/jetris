@@ -112,7 +112,7 @@ public class Game implements Runnable {
         JSONObject obj = new JSONObject();
 
         obj.put("current", Tetromino.toJson(game.getPlayfield().getCurrent()));
-        obj.put("hold", game.getHold().getType().name());
+        obj.put("hold", game.getHold() == null ? null : game.getHold().getType().name());
         obj.put("holdingAllowed", game.getHoldingAllowed());
         obj.put("bag", RandomBag.toJsonArray(game.bag));
         obj.put("score", Score.toJson(game.score));
