@@ -24,7 +24,9 @@ public class HighScore {
     }
 
     private void load() {
-        if (!(this.file.exists() && this.file.isFile() && this.file.canRead())) return;
+        if (!(this.file.exists() && this.file.isFile() && this.file.canRead())) {
+            return;
+        }
 
         try (DataInputStream in = new DataInputStream(new FileInputStream(this.file))) {
             this.score = in.readInt();
@@ -34,10 +36,14 @@ public class HighScore {
     }
 
     private void save() {
-        if (this.score == 0) return;
+        if (this.score == 0) {
+            return;
+        }
 
         try {
-            if (!this.file.createNewFile() && !(this.file.isFile() && this.file.canWrite())) return;
+            if (!this.file.createNewFile() && !(this.file.isFile() && this.file.canWrite())) {
+                return;
+            }
         } catch (IOException e) {
             return;
         }
@@ -50,8 +56,11 @@ public class HighScore {
     }
 
     public static HighScore instance(String path) {
-        if (HighScore.INSTANCE == null) return HighScore.INSTANCE = new HighScore(path);
-        else return HighScore.INSTANCE;
+        if (HighScore.INSTANCE == null) {
+            return HighScore.INSTANCE = new HighScore(path);
+        } else {
+            return HighScore.INSTANCE;
+        }
     }
 
     public static HighScore instance() {

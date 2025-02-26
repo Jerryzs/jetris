@@ -205,11 +205,11 @@ public class GUI extends UserInterface implements WindowListener {
                         g.setColor(Color.BLACK);
                         g.drawRect(x, y, s, s);
                         g.setColor(types[t - 1].getColor());
-                        g.fillRect(x, y, s, s);
                     } else {
                         g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(x, y, s, s);
                     }
+
+                    g.fillRect(x, y, s, s);
                 }
             }
 

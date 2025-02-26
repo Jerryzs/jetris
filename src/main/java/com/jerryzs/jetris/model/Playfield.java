@@ -158,13 +158,9 @@ public class Playfield {
             if (coords[1] < 0) {
                 this.readyToLock = true;
                 return false;
-            }
-
-            if (coords[0] < 0 || coords[0] > 9) {
+            } else if (coords[0] < 0 || coords[0] > 9) {
                 return false;
-            }
-
-            if (this.matrix[coords[1]][coords[0]] != 0) {
+            } else if (this.matrix[coords[1]][coords[0]] != 0) {
                 if (direction == Tetromino.Direction.DOWN) {
                     this.readyToLock = true;
                 }
@@ -175,7 +171,11 @@ public class Playfield {
         this.readyToLock = false;
 
         this.current.move(direction);
-        if (direction != Tetromino.Direction.DOWN) this.cast();
+
+        if (direction != Tetromino.Direction.DOWN) {
+            this.cast();
+        }
+
         return true;
     }
 

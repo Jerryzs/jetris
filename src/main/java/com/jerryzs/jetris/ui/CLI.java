@@ -24,7 +24,7 @@ import java.util.List;
  * and invoke the appropriate actions from the user's instructions.
  */
 // suppress warnings on necessary workarounds for ascii auto-test programs
-@SuppressWarnings({"AvoidEscapedUnicodeCharacters", "UnnecessaryUnicodeEscape", "checkstyle:SuppressWarnings"})
+@SuppressWarnings({"AvoidEscapedUnicodeCharacters", "checkstyle:SuppressWarnings"})
 public class CLI extends UserInterface {
     private final TerminalScreen screen;
     private final TextGraphics textGraphics;

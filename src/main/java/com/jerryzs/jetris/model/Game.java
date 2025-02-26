@@ -4,7 +4,6 @@ import com.jerryzs.jetris.persistence.HighScore;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -333,8 +332,9 @@ public class Game implements Runnable {
         if (!this.playfield.spawn(this.bag.pop())) {
             this.paused = true;
             this.over = true;
-            if (this.score.getPoints() > HighScore.instance().get())
+            if (this.score.getPoints() > HighScore.instance().get()) {
                 HighScore.instance().set(this.score.getPoints());
+            }
         } else {
             this.holdingAllowed = true;
             this.moveCells = 1 / (21600 * this.getGravity() * Math.pow(this.framerate, 3));

@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Score {
-    private Playfield playfield;
+    private final Playfield playfield;
 
     private int points;
     private int level;
