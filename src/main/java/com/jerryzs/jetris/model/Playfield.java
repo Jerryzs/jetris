@@ -11,6 +11,7 @@ public class Playfield {
     private final int[][] matrix;
 
     private Tetromino current;
+    private Tetromino phantom;
 
     private boolean readyToLock;
 
@@ -89,6 +90,10 @@ public class Playfield {
             return this.current.getType().ordinal() + 1;
         }
 
+        if (this.current != null && this.phantom != null && !this.current.isHidden() && this.phantom.occupies(x, y)) {
+            return -1;
+        }
+
         return 0;
     }
 
@@ -121,6 +126,7 @@ public class Playfield {
         }
 
         this.current = tetromino;
+        this.cast();
         return true;
     }
 
@@ -137,6 +143,7 @@ public class Playfield {
         }
 
         this.current = tetromino;
+        this.cast();
         return c;
     }
 
@@ -168,7 +175,21 @@ public class Playfield {
         this.readyToLock = false;
 
         this.current.move(direction);
+        if (direction != Tetromino.Direction.DOWN) this.cast();
         return true;
+    }
+
+    protected void cast() {
+        this.phantom = this.current.clone();
+        for (int i = 0; i < 20; i++) {
+            for (int c : this.phantom.testMove(Tetromino.Direction.DOWN)) {
+                int[] coords = Tetromino.coords(c);
+                if (coords[1] < 0 || this.matrix[coords[1]][coords[0]] != 0) {
+                    return;
+                }
+            }
+            this.phantom.move(Tetromino.Direction.DOWN);
+        }
     }
 
     protected boolean rotate(int direction) {
@@ -194,6 +215,7 @@ public class Playfield {
             this.readyToLock = false;
 
             this.current.rotate();
+            this.cast();
             return true;
         }
 
@@ -206,7 +228,7 @@ public class Playfield {
             this.matrix[coords[1]][coords[0]] = this.current.getType().ordinal() + 1;
         }
 
-        this.current = null;
+        this.current = this.phantom = null;
         this.readyToLock = false;
 
         return this.clear();
