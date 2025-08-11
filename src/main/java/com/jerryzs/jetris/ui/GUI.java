@@ -51,7 +51,7 @@ public class GUI extends UserInterface implements WindowListener {
 
     @Override
     protected Menu getPauseMenu() {
-        return new GUMenu("PAUSED", List.of(
+        return new GUMenu("PAUSED", this::resume, List.of(
                 new GUMenu.Item("Resume", this::resume),
                 new GUMenu.Item("Save", this::save),
                 new GUMenu.Item("Main menu", this::mainMenu),
@@ -63,6 +63,7 @@ public class GUI extends UserInterface implements WindowListener {
     protected Menu getGameOverMenu() {
         return new GUMenu("GAME OVER",
                 "Score: " + this.game.getScore().getPoints(),
+				this::mainMenu,
                 List.of(
                         new GUMenu.Item("Retry", this::start),
                         new GUMenu.Item("Main menu", this::mainMenu),
