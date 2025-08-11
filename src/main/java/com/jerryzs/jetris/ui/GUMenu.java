@@ -13,12 +13,23 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
     private final List<JButton> buttons;
 
     private int active;
+	private final Runnable escapeAction;
 
     protected GUMenu(String title, List<Item> items) {
-        this(title, "", items);
+        this(title, (Runnable) null, items);
     }
 
-    protected GUMenu(String title, String subtitle, List<Item> items) {
+	protected GUMenu(String title, Runnable escapeAction, List<Item> items) {
+		this(title, "", escapeAction, items);
+	}
+
+	protected GUMenu(String title, String subtitle, List<Item> items) {
+		this(title, subtitle, null, items);
+	}
+
+    protected GUMenu(String title, String subtitle, Runnable escapeAction, List<Item> items) {
+		this.escapeAction = escapeAction;
+
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
 
@@ -97,6 +108,10 @@ public class GUMenu extends JPanel implements Menu, KeyListener {
         if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_ENTER) {
             this.buttons.get(this.active).doClick();
         }
+
+		if (key == KeyEvent.VK_ESCAPE && this.escapeAction != null) {
+			this.escapeAction.run();
+		}
     }
 
     @Override
