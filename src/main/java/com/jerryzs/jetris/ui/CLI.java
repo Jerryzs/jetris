@@ -50,6 +50,7 @@ public class CLI extends UserInterface {
             this.screen = new DefaultTerminalFactory(out, in, StandardCharsets.UTF_8).createScreen();
             this.screen.startScreen();
             this.screen.setCursorPosition(null);
+			this.terminalSize = this.screen.getTerminalSize();
             this.textGraphics = this.screen.newTextGraphics();
             this.scale = Math.max(this.screen.getTerminalSize().getRows() / 22, 1);
         } catch (IOException e) {
